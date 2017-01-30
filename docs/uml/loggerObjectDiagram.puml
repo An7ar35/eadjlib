@@ -1,5 +1,5 @@
 @startuml
-package "kcl.teamIndexZero.traffic.log" #FFFFFF {
+package "eadjlib.logger" #FFFFFF {
 	object Logger_Interface
 	object Logger
 	object Log_Engine
@@ -11,7 +11,7 @@ package "kcl.teamIndexZero.traffic.log" #FFFFFF {
 	Log_Engine --o Logger
 	Log_Config --* Log_Engine
 	
-	package "kcl.teamIndexZero.traffic.log.outputs" #DDDDDD {
+	package "eadjlib.logger.outputs" #DDDDDD {
 		object Formatter_Interface
 		object Formatter_TERM
 		object Formatter_TXT
@@ -36,7 +36,7 @@ package "kcl.teamIndexZero.traffic.log" #FFFFFF {
 		Output_CSV *-- Formatter_CSV
 	}
 	
-	package "kcl.teamIndexZero.traffic.log.fileIO" #DDDDDD {
+	package "eadjlib.logger.fileIO" #DDDDDD {
 		object FileIO
 		object FileInput
 		object FileOutput

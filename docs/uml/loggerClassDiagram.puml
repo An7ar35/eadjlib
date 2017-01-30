@@ -1,6 +1,6 @@
 @startuml
 
-package "kcl.teamIndexZero.traffic.log" #FFFFFF {
+package "eadjlib.logger" #FFFFFF {
 	Logger --|> Logger_Interface
 	Log_Levels <-- Logger
 	Log_TimeStamp --o Logger
@@ -84,7 +84,7 @@ package "kcl.teamIndexZero.traffic.log" #FFFFFF {
 		+toString() : String
 	}
 
-	package "kcl.teamIndexZero.traffic.log.outputs" #DDDDDD {
+	package "eadjlib.logger.outputs" #DDDDDD {
 		interface Formatter_Interface <<interface>> {
 			format( origin_name : String, log_level : int, log_number : Long, time_stamp : Log_TimeStamp, objects : Object... ) : String
 			format( origin_name : String, time_stamp : Log_TimeStamp, log_number : Long, e : Exception ) : String
@@ -175,7 +175,7 @@ package "kcl.teamIndexZero.traffic.log" #FFFFFF {
 		Output_CSV *-- Formatter_CSV
 	}
 	
-	package "kcl.teamIndexZero.traffic.log.fileIO" #DDDDDD {
+	package "eadjlib.logger.fileIO" #DDDDDD {
 		class FileIO {
 			-{static} Charset charset
 			-String directory
