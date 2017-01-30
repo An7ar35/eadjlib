@@ -25,21 +25,19 @@ classes.
 
 ##### Interface:
 
-```
-void log( Object... objects ); //Standard message
+    void log( Object... objects ); //Standard message
 
-void log_Fatal( Object... objects ); //Fatal event
+    void log_Fatal( Object... objects ); //Fatal event
 
-void log_Error( Object... objects ); //Error
+    void log_Error( Object... objects ); //Error
 
-void log_Warning( Object... objects ); //Warning
+    void log_Warning( Object... objects ); //Warning
 
-void log_Debug( Object... objects ); //Debug
+    void log_Debug( Object... objects ); //Debug
 
-void log_Trace( Object... objects ); //For tracing
+    void log_Trace( Object... objects ); //For tracing
 
-void log_Exception( Exception e ); //For pushing exception to the log after an error
-```
+    void log_Exception( Exception e ); //For pushing exception to the log after an error
 
 #### Usage
 
@@ -57,12 +55,12 @@ a previous message detailing the event.
 
 e.g.:
 
-```try { 
-/** some stuff that raises an exception **/ 
-} catch ( Exception e ) { 
-log.log_error( "An exception was raise because..." ),
-log.log_Exception( e )
-}```
+    try {
+        /** some stuff that raises an exception **/ 
+    } catch ( Exception e ) { 
+        log.log_error( "An exception was raise because..." ),
+        log.log_Exception( e )
+    }
 
 ##### Configuration
 
