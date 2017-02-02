@@ -35,8 +35,6 @@ public class Formatter_TERMTest {
         e.printStackTrace(pw);
         expected += sw.toString() + System.lineSeparator();
         String returned = formatter.format("Formatter_TERMTest", ts, new Long(100), e);
-        //assertEquals(expected, returned);
-        System.out.println( expected );
-        System.out.println( returned );
+        assertEquals(expected, returned);
     }
 }
