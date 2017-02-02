@@ -7,4 +7,5 @@ public enum GlobalOutputTypes {
     TERMINAL,   //Console
     TXT,        //Plain text
     CSV,        //CSV formatted
+    WINDOW,     //jFX Window
 }

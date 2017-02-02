@@ -3,10 +3,7 @@ package eadjlib.logger;
 import eadjlib.logger.fileIO.FileInput;
 import eadjlib.logger.fileIO.FileOutput;
 import eadjlib.logger.microLogger.MicroLogger;
-import eadjlib.logger.outputs.Output;
-import eadjlib.logger.outputs.Output_CSV;
-import eadjlib.logger.outputs.Output_TERM;
-import eadjlib.logger.outputs.Output_TXT;
+import eadjlib.logger.outputs.*;
 
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
@@ -162,6 +159,17 @@ public class Log_Config {
                     this.outputs.add(new Output_TERM(matcher.group(1)));
                     return true;
                 }
+                if (line.matches("^OUTPUT=<TERMINAL_COLOUR,\\w+>$")) {
+                    Matcher matcher = pattern.matcher(line);
+                    matcher.find();
+                    this.outputs.add(new Output_TERM_COLOR(matcher.group(1)));
+                    return true;
+                }
+                if( line.matches( "^OUTPUT=<WINDOW,\\w+>$")) {
+                    Matcher matcher = pattern.matcher(line);
+                    matcher.find();
+                    this.outputs.add( new Output_WINDOW( matcher.group( 4 )));
+                }
                 return false;
             }
             if (line.matches("^FLAG=<[A-Z]+,[01]?>$")) { //Flag
@@ -245,7 +253,7 @@ public class Log_Config {
                 String s = "//======================================================================================" + System.lineSeparator() +
                         "// - Log configuration file - " + System.lineSeparator() +
                         "//======================================================================================" + System.lineSeparator() +
-                        "// Output types available: TERMINAL, TXT, CSV" + System.lineSeparator() +
+                        "// Output types available: TERMINAL, TERMINAL_COLOUR, TXT, CSV, WINDOW" + System.lineSeparator() +
                         "// Flag types available: EXCEPTIONS," + System.lineSeparator() +
                         "// \t> syntax: NAME_OF_FLAG=1 for On or NAME_OF_FLAG=0 for Off" + System.lineSeparator() +
                         "// Variable types available: LEVEL" + System.lineSeparator() +
