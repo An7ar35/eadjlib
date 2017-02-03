@@ -24,7 +24,7 @@ public class Output_TXTTest {
     @Before
     public void setUp() throws Exception {
         mocked_file_out = mock(FileOutput.class);
-        out = new Output_TXT(mocked_file_out);
+        out = new Output_TXT(mocked_file_out, new Formatter_TXT());
     }
 
     @After

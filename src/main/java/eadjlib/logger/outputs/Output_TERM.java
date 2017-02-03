@@ -6,15 +6,17 @@ import eadjlib.logger.Log_TimeStamp;
  * Output to the console
  */
 public class Output_TERM extends Output {
-    private Formatter_TERM formatter = new Formatter_TERM();
+    private Formatter_Interface formatter;
 
     /**
      * Constructor
      *
-     * @param name Output name;
+     * @param output_name Name of output
+     * @param formatter   Formatter to use
      */
-    public Output_TERM(String name) {
-        super(name, GlobalOutputTypes.TERMINAL);
+    public Output_TERM(String output_name, Formatter_Interface formatter) {
+        super(output_name, GlobalOutputTypes.TERMINAL);
+        this.formatter = formatter;
     }
 
     /**

@@ -144,31 +144,31 @@ public class Log_Config {
                 if (line.matches("^OUTPUT=<TXT,\\w+>$")) {
                     Matcher matcher = pattern.matcher(line);
                     matcher.find();
-                    this.outputs.add(new Output_TXT(matcher.group(1) + "_" + this.ts.getCustomStamp("yyyyMMdd'-'HHmmss")));
+                    this.outputs.add(new Output_TXT(matcher.group(1) + "_" + this.ts.getCustomStamp("yyyyMMdd'-'HHmmss"), new Formatter_TXT()));
                     return true;
                 }
                 if (line.matches("^OUTPUT=<CSV,\\w+>$")) {
                     Matcher matcher = pattern.matcher(line);
                     matcher.find();
-                    this.outputs.add(new Output_CSV(matcher.group(1) + "_" + this.ts.getCustomStamp("yyyyMMdd'-'HHmmss")));
+                    this.outputs.add(new Output_CSV(matcher.group(1) + "_" + this.ts.getCustomStamp("yyyyMMdd'-'HHmmss"), new Formatter_CSV()));
                     return true;
                 }
                 if (line.matches("^OUTPUT=<TERMINAL,\\w+>$")) {
                     Matcher matcher = pattern.matcher(line);
                     matcher.find();
-                    this.outputs.add(new Output_TERM(matcher.group(1)));
+                    this.outputs.add(new Output_TERM(matcher.group(1), new Formatter_TERM()));
                     return true;
                 }
                 if (line.matches("^OUTPUT=<TERMINAL_COLOUR,\\w+>$")) {
                     Matcher matcher = pattern.matcher(line);
                     matcher.find();
-                    this.outputs.add(new Output_TERM_COLOR(matcher.group(1)));
+                    this.outputs.add(new Output_TERM(matcher.group(1), new Formatter_TERM_COLOR()));
                     return true;
                 }
-                if( line.matches( "^OUTPUT=<WINDOW,\\w+>$")) {
+                if (line.matches("^OUTPUT=<WINDOW,\\w+>$")) {
                     Matcher matcher = pattern.matcher(line);
                     matcher.find();
-                    this.outputs.add( new Output_WINDOW( matcher.group( 4 )));
+                    this.outputs.add(new Output_WINDOW(matcher.group(4), new Formatter_TERM())); //TODO change to better formatter
                 }
                 return false;
             }
@@ -230,9 +230,9 @@ public class Log_Config {
         this.global_log_level = Log_Levels.WARNING;
         this.log_exception_flag = true;
         this.outputs.clear();
-        this.outputs.add(new Output_TERM("Console"));
+        this.outputs.add(new Output_TERM("Console", new Formatter_TERM()));
         try {
-            this.outputs.add(new Output_TXT(this.global_file_name));
+            this.outputs.add(new Output_TXT(this.global_file_name, new Formatter_TXT()));
         } catch (IOException e) {
             MicroLogger.INSTANCE.log_Fatal("IOException raised in [Log_Config.applyDefaultConfiguration()] on creation of TXT output. Log messages will only show in the console.");
             MicroLogger.INSTANCE.log_ExceptionMsg(e);

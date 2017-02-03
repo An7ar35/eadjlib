@@ -96,6 +96,12 @@ package "eadjlib.logger" #FFFFFF {
 			+format( origin_name : String, time_stamp : Log_TimeStamp, log_number : Long, e : Exception ) : String
 		}
 
+		class Formatter_TERM_COLOR {
+			#Formatter_TERM()
+			+format( origin_name String, log_level : int, log_number : Long, time_stamp : Log_TimeStamp, objects : Object... ) : String
+			+format( origin_name : String, time_stamp : Log_TimeStamp, log_number : Long, e : Exception ) : String
+		}
+
 		class Formatter_TXT {
 			#Formatter_TXT()
 			+format( origin_name String, log_level : int, log_number : Long, time_stamp : Log_TimeStamp, objects : Object... ) : String
@@ -121,6 +127,16 @@ package "eadjlib.logger" #FFFFFF {
 
 		class Output_TERM {
 			-Formatter_TERM formatter
+			+Output_TERM( name : String )
+			+setName( output_name : String )
+			+getOutputName() : String
+			+getOutputType() : GlobalOutputTypes
+			+output( origin_name : String, log_level : int, log_number : Long, time_stamp Log_TimeStamp, objects : Object... )
+			+output( origin_name : String, time_stamp : Log_TimeStamp, log_number : Long, e : Exception )
+		}
+
+		class Output_TERM_COLOR {
+			-Formatter_TERM_COLOR formatter
 			+Output_TERM( name : String )
 			+setName( output_name : String )
 			+getOutputName() : String
@@ -160,19 +176,20 @@ package "eadjlib.logger" #FFFFFF {
 		}
 
 		Formatter_TERM --|> Formatter_Interface
+		Formatter_TERM_COLOR --|> Formatter_Interface
 		Formatter_TXT --|> Formatter_Interface
 		Formatter_CSV --|> Formatter_Interface
-		Log_TimeStamp --o Formatter_TERM
-		Log_TimeStamp --o Formatter_TXT
-		Log_TimeStamp --o Formatter_CSV
+
+		Formatter_Interface o-- Log_TimeStamp
 		GlobalOutputTypes <-- Output
 		Output --* Log_Engine
+
 		Output <|-- Output_TERM
+		Output <|-- Output_TERM_COLOR
 		Output <|-- Output_TXT
 		Output <|-- Output_CSV
-		Output_TERM *-- Formatter_TERM
-		Output_TXT *-- Formatter_TXT
-		Output_CSV *-- Formatter_CSV
+
+		Output *-up- Formatter_Interface
 	}
 	
 	package "eadjlib.logger.fileIO" #DDDDDD {
@@ -216,7 +233,8 @@ package "eadjlib.logger" #FFFFFF {
 		FileIO <|-- FileInput
 	}
 	
-	FileOutput --* Output
+	FileOutput --* Output_TXT
+	FileOutput --* Output_CSV
 	FileInput --* Log_Config
 	
 	class MicroLogger { 

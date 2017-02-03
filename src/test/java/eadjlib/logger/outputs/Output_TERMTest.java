@@ -26,26 +26,26 @@ public class Output_TERMTest {
 
     @Test
     public void testSetName() throws Exception {
-        Output_TERM out = new Output_TERM("output name");
+        Output_TERM out = new Output_TERM("output name", new Formatter_TERM());
         out.setName("new name for output");
         assertEquals(out.getOutputName(), "new name for output");
     }
 
     @Test
     public void testGetOutputName() throws Exception {
-        Output_TERM out = new Output_TERM("output name");
+        Output_TERM out = new Output_TERM("output name", new Formatter_TERM());
         assertEquals(out.getOutputName(), "output name");
     }
 
     @Test
     public void testGetOutputType() throws Exception {
-        Output_TERM out = new Output_TERM("output_name");
+        Output_TERM out = new Output_TERM("output_name", new Formatter_TERM());
         assertEquals(out.getOutputType(), GlobalOutputTypes.TERMINAL);
     }
 
     @Test
     public void testOutput() throws Exception {
-        Output_TERM out = new Output_TERM("Output_Name");
+        Output_TERM out = new Output_TERM("Output_Name", new Formatter_TERM());
         LocalDateTime ltd = LocalDateTime.now();
         Log_TimeStamp ts = new Log_TimeStamp(ltd);
         out.output("Output_TERMTest", 4, new Long(100), ts, "Description message.");
@@ -55,7 +55,7 @@ public class Output_TERMTest {
 
     @Test
     public void testOutputException() throws Exception {
-        Output_TERM out = new Output_TERM("Output_Name");
+        Output_TERM out = new Output_TERM("Output_Name", new Formatter_TERM());
         LocalDateTime ltd = LocalDateTime.now();
         Log_TimeStamp ts = new Log_TimeStamp(ltd);
         Exception e = new IOException("Some exception message.");
