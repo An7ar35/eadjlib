@@ -8,12 +8,6 @@ import eadjlib.logger.Log_TimeStamp;
  */
 public class Formatter_CSV implements Formatter_Interface {
     /**
-     * Constructor
-     */
-    protected Formatter_CSV() {
-    }
-
-    /**
      * Formats message information for CSV File output
      *
      * @param origin_name Name of the message's origin

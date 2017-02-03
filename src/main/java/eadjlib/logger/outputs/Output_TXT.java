@@ -10,17 +10,19 @@ import java.io.IOException;
  * Output to '.txt' file
  */
 public class Output_TXT extends Output {
-    private Formatter_TXT formatter = new Formatter_TXT();
+    private Formatter_Interface formatter;
     private FileOutput out = null;
 
     /**
      * Constructor
      *
      * @param output_name Name of the file
+     * @param formatter   Formatter to use
      * @throws IOException when creating a FileOutput fails
      */
-    public Output_TXT(String output_name) throws IOException {
+    public Output_TXT(String output_name, Formatter_Interface formatter) throws IOException {
         super(output_name, GlobalOutputTypes.TXT);
+        this.formatter = formatter;
         try {
             out = new FileOutput("logs", output_name + ".txt");
         } catch (IOException e) {
@@ -36,8 +38,9 @@ public class Output_TXT extends Output {
      * @param output Instance of the FileOutput
      * @throws IOException creating a FileOutput fails
      */
-    public Output_TXT(FileOutput output) throws IOException {
+    public Output_TXT(FileOutput output, Formatter_Interface formatter) throws IOException {
         super(output.getFileName(), GlobalOutputTypes.TXT);
+        this.formatter = formatter;
         out = output;
     }
 

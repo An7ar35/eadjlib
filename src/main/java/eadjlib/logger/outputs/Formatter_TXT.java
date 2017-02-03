@@ -11,12 +11,6 @@ import java.io.StringWriter;
  */
 public class Formatter_TXT implements Formatter_Interface {
     /**
-     * Constructor
-     */
-    protected Formatter_TXT() {
-    }
-
-    /**
      * Formats message information for Text File output
      *
      * @param origin_name Name of the message's origin

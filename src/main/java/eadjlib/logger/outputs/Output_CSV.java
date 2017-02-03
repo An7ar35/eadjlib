@@ -10,7 +10,7 @@ import java.io.IOException;
  * Output to '.csv' file
  */
 public class Output_CSV extends Output {
-    private Formatter_CSV formatter = new Formatter_CSV();
+    private Formatter_Interface formatter;
     private FileOutput out = null;
 
     /**
@@ -19,8 +19,9 @@ public class Output_CSV extends Output {
      * @param output_name Name of output
      * @throws IOException when creating a FileOutput fails
      */
-    public Output_CSV(String output_name) throws IOException {
+    public Output_CSV(String output_name, Formatter_Interface formatter) throws IOException {
         super(output_name, GlobalOutputTypes.CSV);
+        this.formatter = formatter;
         try {
             out = new FileOutput("logs", output_name + ".csv");
         } catch (IOException e) {
@@ -36,8 +37,9 @@ public class Output_CSV extends Output {
      * @param output Name of output
      * @throws IOException when creating a FileOutput fails
      */
-    public Output_CSV(FileOutput output) throws IOException {
+    public Output_CSV(FileOutput output, Formatter_Interface formatter) throws IOException {
         super(output.getFileName(), GlobalOutputTypes.CSV);
+        this.formatter = formatter;
         out = output;
     }
 

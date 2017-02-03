@@ -13,7 +13,7 @@ public class Formatter_TERM implements Formatter_Interface {
     /**
      * Constructor
      */
-    protected Formatter_TERM() {
+    public Formatter_TERM() {
     }
 
     /**

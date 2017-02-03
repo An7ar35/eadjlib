@@ -3,15 +3,16 @@ package eadjlib.logger.outputs;
 import eadjlib.logger.Log_TimeStamp;
 
 public class Output_WINDOW extends Output {
-    private Formatter_TERM formatter = new Formatter_TERM(); //TODO modify to something a bit better at some point
+    private Formatter_Interface formatter;
 
     /**
      * Constructor
      *
      * @param name Output name
      */
-    public Output_WINDOW(String name) {
+    public Output_WINDOW(String name, Formatter_Interface formatter) {
         super(name, GlobalOutputTypes.WINDOW);
+        this.formatter = formatter;
     }
 
     /**

@@ -22,7 +22,7 @@ public class Output_CSVTest {
     @Before
     public void setUp() throws Exception {
         mocked_file_out = mock(FileOutput.class);
-        out = new Output_CSV(mocked_file_out);
+        out = new Output_CSV(mocked_file_out, new Formatter_CSV());
     }
 
     @After
