@@ -2,17 +2,28 @@ package eadjlib.logger.outputs;
 
 import eadjlib.logger.Log_TimeStamp;
 
+/**
+ * Outputs to GUI log view window
+ */
 public class Output_WINDOW extends Output {
-    private Formatter_Interface formatter;
+    private Log_Window_Interface window;
 
     /**
      * Constructor
      *
      * @param name Output name
      */
-    public Output_WINDOW(String name, Formatter_Interface formatter) {
+    public Output_WINDOW(String name) {
         super(name, GlobalOutputTypes.WINDOW);
-        this.formatter = formatter;
+    }
+
+    /**
+     * Sets the window to send the log messages to
+     *
+     * @param window Log-view window
+     */
+    public void setWindowOutput(Log_Window_Interface window) {
+        this.window = window;
     }
 
     /**
@@ -48,7 +59,9 @@ public class Output_WINDOW extends Output {
      */
     @Override
     public void output(String origin_name, int log_level, Long log_number, Log_TimeStamp time_stamp, Object... objects) {
-        super.output(origin_name, log_level, log_number, time_stamp, objects);
+        if (window != null) {
+            window.append(origin_name, log_level, log_number, time_stamp, objects);
+        }
     }
 
     /**
@@ -59,6 +72,8 @@ public class Output_WINDOW extends Output {
      */
     @Override
     public void output(String origin_name, Log_TimeStamp time_stamp, Long log_number, Exception e) {
-        super.output(origin_name, time_stamp, log_number, e);
+        if (window != null) {
+            window.append(origin_name, time_stamp, log_number, e);
+        }
     }
 }

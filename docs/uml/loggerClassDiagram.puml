@@ -90,6 +90,11 @@ package "eadjlib.logger" #FFFFFF {
 			format( origin_name : String, time_stamp : Log_TimeStamp, log_number : Long, e : Exception ) : String
 		}
 
+		interface Log_Window_Interface <<interface>> {
+            +append( origin_name : String, log_level : int, log_number : Long, time_stamp Log_TimeStamp, objects : Object... )
+            +append( origin_name : String, time_stamp : Log_TimeStamp, log_number : Long, e : Exception )
+		}
+
 		class Formatter_TERM {
 			#Formatter_TERM()
 			+format( origin_name String, log_level : int, log_number : Long, time_stamp : Log_TimeStamp, objects : Object... ) : String
@@ -126,18 +131,8 @@ package "eadjlib.logger" #FFFFFF {
 		}
 
 		class Output_TERM {
-			-Formatter_TERM formatter
-			+Output_TERM( name : String )
-			+setName( output_name : String )
-			+getOutputName() : String
-			+getOutputType() : GlobalOutputTypes
-			+output( origin_name : String, log_level : int, log_number : Long, time_stamp Log_TimeStamp, objects : Object... )
-			+output( origin_name : String, time_stamp : Log_TimeStamp, log_number : Long, e : Exception )
-		}
-
-		class Output_TERM_COLOR {
-			-Formatter_TERM_COLOR formatter
-			+Output_TERM( name : String )
+			-Formatter_Interface formatter
+			+Output_TERM( name : String, formatter : Formatter_Interface )
 			+setName( output_name : String )
 			+getOutputName() : String
 			+getOutputType() : GlobalOutputTypes
@@ -146,9 +141,9 @@ package "eadjlib.logger" #FFFFFF {
 		}
 
 		class Output_TXT {
-			-Formatter_TXT formatter
+			-Formatter_Interface formatter
 			-FileOutput out
-			+Output_TXT( name : String )
+			+Output_TXT( name : String, formatter : Formatter_Interface )
 			+Output_TXT( out : FileOutput )
 			+setName( output_name : String )
 			+getOutputName() : String
@@ -158,9 +153,9 @@ package "eadjlib.logger" #FFFFFF {
 		}
 
 		class Output_CSV {
-			-Formatter_CSV formatter
+			-Formatter_Interface formatter
 			-FileOutput out
-			+Output_CSV( name : String )
+			+Output_CSV( name : String, formatter : Formatter_Interface )
 			+Output_CSV( out : FileOutput )
 			+setName( output_name : String )
 			+getOutputName() : String
@@ -168,7 +163,17 @@ package "eadjlib.logger" #FFFFFF {
 			+output( origin_name : String, log_level : int, log_number : Long, time_stamp Log_TimeStamp, objects : Object... )
 			+output( origin_name : String, time_stamp : Log_TimeStamp, log_number : Long, e : Exception )
 		}
-		
+
+		class Output_WINDOW {
+		    -Log_Output_Interface window
+			+Output_WINDOW( name : String )
+			+setName( output_name : String )
+			+getOutputName() : String
+			+getOutputType() : GlobalOutputTypes
+			+append( origin_name : String, log_level : int, log_number : Long, time_stamp Log_TimeStamp, objects : Object... )
+			+append( origin_name : String, time_stamp : Log_TimeStamp, log_number : Long, e : Exception )
+		}
+
 		enum GlobalOutputTypes <<enum>> {
 			TERMINAL
 			TXT
@@ -185,10 +190,11 @@ package "eadjlib.logger" #FFFFFF {
 		Output --* Log_Engine
 
 		Output <|-- Output_TERM
-		Output <|-- Output_TERM_COLOR
 		Output <|-- Output_TXT
 		Output <|-- Output_CSV
+		Output <|-- Output_WINDOW
 
+        Output_WINDOW o-- Log_Window_Interface
 		Output *-up- Formatter_Interface
 	}
 	

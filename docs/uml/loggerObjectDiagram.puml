@@ -21,6 +21,8 @@ package "eadjlib.logger" #FFFFFF {
 		object Output_TERM
 		object Output_TXT
 		object Output_CSV
+		object Output_WINDOW
+		object Log_Window_Interface
 
 		Formatter_TERM --|> Formatter_Interface
 	    Formatter_TERM_COLOR --|> Formatter_Interface
@@ -33,7 +35,9 @@ package "eadjlib.logger" #FFFFFF {
 		Output <|-- Output_TERM
 		Output <|-- Output_TXT
 		Output <|-- Output_CSV
+		Output <|-- Output_WINDOW
 
+        Output_WINDOW o-- Log_Window_Interface
 		Output *-up- Formatter_Interface
 
 	}
