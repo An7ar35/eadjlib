@@ -1,10 +1,8 @@
 package eadjlib.logger.outputs;
 
 import eadjlib.logger.Log_TimeStamp;
-import eadjlib.logger.Log_Window_Interface;
 
 public class Output_WINDOW extends Output {
-    private Formatter_Interface formatter;
     private Log_Window_Interface window;
 
     /**
@@ -12,9 +10,8 @@ public class Output_WINDOW extends Output {
      *
      * @param name Output name
      */
-    public Output_WINDOW(String name, Formatter_Interface formatter) {
+    public Output_WINDOW(String name) {
         super(name, GlobalOutputTypes.WINDOW);
-        this.formatter = formatter;
     }
 
     /**
