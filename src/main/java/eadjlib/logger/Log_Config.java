@@ -22,6 +22,7 @@ public class Log_Config {
     private Vector<Output> outputs = new Vector<>();
     private String config_file_name = "log_config.cfg";
     private Log_TimeStamp ts = null;
+    private Output_WINDOW window_output = null;
 
 
     /**
@@ -67,6 +68,15 @@ public class Log_Config {
      */
     protected Vector<Output> getOutputs() {
         return this.outputs;
+    }
+
+    /**
+     * Gets the Output to a window instance
+     *
+     * @return Output window
+     */
+    protected Output_WINDOW getWindowOutput() {
+        return this.window_output;
     }
 
     /**
@@ -168,7 +178,9 @@ public class Log_Config {
                 if (line.matches("^OUTPUT=<WINDOW,\\w+>$")) {
                     Matcher matcher = pattern.matcher(line);
                     matcher.find();
-                    this.outputs.add(new Output_WINDOW(matcher.group(4)));
+                    this.outputs.add(new Output_WINDOW(matcher.group(1)));
+                    this.window_output = (Output_WINDOW) this.outputs.lastElement();
+                    return true;
                 }
                 return false;
             }

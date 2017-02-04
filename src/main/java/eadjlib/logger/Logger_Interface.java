@@ -1,5 +1,7 @@
 package eadjlib.logger;
 
+import eadjlib.logger.outputs.Log_Window_Interface;
+
 /**
  * Interface for the Logger
  */
@@ -57,5 +59,11 @@ public interface Logger_Interface {
      * @param e Exception
      */
     void log_Exception(Exception e);
+
+    /**
+     * Connects up a custom viewing window for the log outputs
+     * @param window Viewing window
+     */
+    boolean connectView(Log_Window_Interface window );
 
 }

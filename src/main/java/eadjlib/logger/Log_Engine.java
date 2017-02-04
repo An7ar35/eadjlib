@@ -1,7 +1,9 @@
 package eadjlib.logger;
 
 import eadjlib.logger.microLogger.MicroLogger;
+import eadjlib.logger.outputs.Log_Window_Interface;
 import eadjlib.logger.outputs.Output;
+import eadjlib.logger.outputs.Output_WINDOW;
 
 /**
  * Log engine
@@ -42,6 +44,21 @@ public class Log_Engine {
     public Log_Engine(Log_Config config) {
         global_config = config;
         session_msg_number = new Long(0);
+    }
+
+    /**
+     * Injects a viewing interface for the log messages
+     *
+     * @param window Window interface
+     * @return Success
+     */
+    protected boolean injectViewingInterface(Log_Window_Interface window) {
+        Output_WINDOW output = this.global_config.getWindowOutput();
+        if (output != null) {
+            output.setWindowOutput(window);
+            return true;
+        }
+        return false;
     }
 
     /**
