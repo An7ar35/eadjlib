@@ -2,6 +2,9 @@ package eadjlib.logger.outputs;
 
 import eadjlib.logger.Log_TimeStamp;
 
+/**
+ * Outputs to GUI log view window
+ */
 public class Output_WINDOW extends Output {
     private Log_Window_Interface window;
 
