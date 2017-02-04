@@ -168,7 +168,7 @@ public class Log_Config {
                 if (line.matches("^OUTPUT=<WINDOW,\\w+>$")) {
                     Matcher matcher = pattern.matcher(line);
                     matcher.find();
-                    this.outputs.add(new Output_WINDOW(matcher.group(4), new Formatter_TERM())); //TODO change to better formatter
+                    this.outputs.add(new Output_WINDOW(matcher.group(4)));
                 }
                 return false;
             }
