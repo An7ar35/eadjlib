@@ -1,5 +1,7 @@
 package eadjlib.logger;
 
+import eadjlib.logger.outputs.Log_Window_Interface;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -115,5 +117,16 @@ public class Logger implements Logger_Interface {
     @Override
     public void log_Exception(Exception e) {
         log_engine.processException(new Log_TimeStamp(), calling_instance_name, e);
+    }
+
+    /**
+     * Connect up a viewing interface for the log messages
+     *
+     * @param window Viewing window
+     * @return Success
+     */
+    @Override
+    public boolean connectView(Log_Window_Interface window) {
+        return log_engine.injectViewingInterface(window);
     }
 }
