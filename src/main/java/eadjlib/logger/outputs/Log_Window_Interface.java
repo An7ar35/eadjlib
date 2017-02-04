@@ -1,4 +1,6 @@
-package eadjlib.logger;
+package eadjlib.logger.outputs;
+
+import eadjlib.logger.Log_TimeStamp;
 
 /**
  * Interface for a GUI log window
