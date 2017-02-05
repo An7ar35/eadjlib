@@ -15,6 +15,7 @@ package "eadjlib.logger" #FFFFFF {
 		{abstract} log_Debug( objects : Object... )
 		{abstract} log_Trace( objects : Object... )
 		{abstract} log_Exception( e : Exception )
+		{abstract} connectView( window : Log_Window_Interface ) : boolean
 	}
 
 	class Logger {
@@ -30,6 +31,7 @@ package "eadjlib.logger" #FFFFFF {
 		+log_Debug( objects : Object... )
 		+log_Trace( objects : Object... )
 		+log_Exception( e : Exception )
+		+connectView( window : Log_Window_Interface ) : boolean
 	}
 
 	class Log_Engine <<singleton>> {
@@ -39,6 +41,7 @@ package "eadjlib.logger" #FFFFFF {
 		+Log_Engine( config : Log_Config )
 		+{static} getInstance() : Log_Engine
 		+{static} load( locator : Log_Engine )
+		#injectViewingInterface( window : Log_Window_Interface ) : boolean
 		#processLogMsg( time_stamp : Log_TimeStamp, level : int, class_origin : String, objects : Object... )
 		#processException( time_stamp : Log_TimeStamp, class_origin : String, e : Exception )
 	}
@@ -50,10 +53,12 @@ package "eadjlib.logger" #FFFFFF {
 		-Vector<Output> outputs
 		-String config_file_name
 		-Log_TimeStamp ts
+		-Output_WINDOW window_output
 		+Log_Config()
 		+getGlobalLogLevel : int
 		+getLogExceptionFlag() : boolean
 		#getOutputs() : Vector<Output>
+		#getWindowOutput() : Output_WINDOW
 		-setGlobalLogLevel( level : int )
 		-loadConfiguration( file_name : String ) : boolean
 		-applyConfigurationLine( line : String ) : boolean
@@ -168,6 +173,7 @@ package "eadjlib.logger" #FFFFFF {
 		    -Log_Output_Interface window
 			+Output_WINDOW( name : String )
 			+setName( output_name : String )
+			+setWindowOutput( window : Log_Window_Interface )
 			+getOutputName() : String
 			+getOutputType() : GlobalOutputTypes
 			+append( origin_name : String, log_level : int, log_number : Long, time_stamp Log_TimeStamp, objects : Object... )
