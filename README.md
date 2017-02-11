@@ -67,3 +67,15 @@ e.g.:
 The `log_config.cfg` file is created during the first run of the logger 
 if it isn't there already. Inside you can set your options for the logging 
 like the log level and outputs you want to see the log messages in. 
+
+##### GUI Viewer
+
+To create a viewer for the log:
+
+ 1. Add `OUTPUT=<WINDOW,window_name>` to the log's config file,
+ 2. Create a class that implements `Log_Window_Interface` to pass the messages 
+    from the log to your viewer,
+ 3. Call `connectView( Log_Window_Interface )` with your implemented class as an argument 
+    to connect the logger to the class. 
+
+An example implementation of a GUI log viewer using JavaFX is available [here](https://github.com/An7ar35/guiLoggerView).
