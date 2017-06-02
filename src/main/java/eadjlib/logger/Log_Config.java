@@ -149,7 +149,7 @@ public class Log_Config {
             if (line.matches("^//(?s:.)*$")) { //Comment ('//...')
                 return true;
             }
-            if (line.matches("^OUTPUT=<[A-Z]+,\\w+>$")) { //Output
+            if (line.matches("^OUTPUT=<[A-Z_]+,\\w+>$")) { //Output
                 final Pattern pattern = Pattern.compile(",(.+?)>");
                 if (line.matches("^OUTPUT=<TXT,\\w+>$")) {
                     Matcher matcher = pattern.matcher(line);

@@ -2,8 +2,10 @@ package eadjlib.logger.outputs;
 
 import eadjlib.logger.Log_Levels;
 import eadjlib.logger.Log_TimeStamp;
+import eadjlib.logger.fileIO.FileInput;
 import eadjlib.logger.fileIO.FileOutput;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +13,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
@@ -69,5 +73,23 @@ public class Output_TXTTest {
         out.output("OutputTest", ts, new Long(100), e);
         String expected = "[  100]\t===Exception raised in [OutputTest] at " + ts.getDate() + " - " + ts.getTime() + "===" + System.lineSeparator() + "\t" + sw.toString() + System.lineSeparator();
         verify(mocked_file_out).appendString(eq(expected));
+    }
+
+    @Test
+    public void testHardOutput() throws  Exception {
+        Output_TXT file_out = new Output_TXT( "FileOutputTest", new Formatter_TXT() );
+        LocalDateTime ltd = LocalDateTime.now();
+        Log_TimeStamp ts = new Log_TimeStamp(ltd);
+
+        file_out.output("Output_TXTTest", 4, new Long(100), ts, "Description message.");
+
+        List<String> expected_lines = new ArrayList<>();
+        expected_lines.add( "[  100] " + ts.getDate() + " - " + ts.getTime() + " " + Log_Levels.txtLevels[4] + " [Output_TXTTest] Description message." );
+
+        FileInput file_in = new FileInput( "logs", "FileOutputTest.txt" );
+        List<String> in = file_in.read();
+        file_in.deleteFile();
+
+        Assert.assertEquals( "File content is as expected.", expected_lines.get(0), in.get(0));
     }
 }
