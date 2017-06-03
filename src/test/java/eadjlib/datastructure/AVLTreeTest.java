@@ -9,13 +9,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AVLTreeTest {
-    private AVLTree<Integer,String> tree;
+    private AVLTree<Integer, String> tree;
 
     class Printer implements IPrintFunction {
         @Override
         public void call(Object... objects) {
-            for( Object o : objects ) {
-                System.out.println( o + " " );
+            for (Object o : objects) {
+                System.out.print(o + " ");
             }
         }
     }
@@ -47,11 +47,9 @@ public class AVLTreeTest {
 
     @Test
     public void add() throws Exception {
-        Logger log = Logger.getLoggerInstance( AVLTreeTest.class.getName() );
-        log.log( "Starting...");
-//        for( int i = 0; i < 10; i++ ) {
-//            tree.add( i, "");
-//        }
+        for (int i = 0; i < 10; i++) {
+            tree.add(i, "");
+        }
 
 //        tree.add( 6, "" );
 //        tree.add( 7, "" );
@@ -60,12 +58,13 @@ public class AVLTreeTest {
 //        tree.add( 3, "" );
 //        tree.add( 2, "" );
 
-        //tree.inOrder( new Printer() );
-        System.out.print( tree.toString_Debug());
-        System.out.println( tree.size() );
-        Assert.assertTrue( tree.size() == 10 );
-        System.out.println( tree.height() );
-        Assert.assertTrue( tree.height() == 4 );
+        tree.inOrder(new Printer());
+        System.out.print(System.lineSeparator());
+        System.out.print(tree.toString_Debug());
+        System.out.println(tree.size());
+        Assert.assertTrue(tree.size() == 10);
+        System.out.println(tree.height());
+        Assert.assertTrue(tree.height() == 4);
     }
 
     @Test
@@ -82,9 +81,7 @@ public class AVLTreeTest {
 
     @Test
     public void size() throws Exception {
-        Logger log = Logger.getLoggerInstance( AVLTreeTest.class.getName() );
-        log.log( "Starting...");
-        Assert.assertTrue( tree.size() == 0 );
+        Assert.assertTrue(tree.size() == 0);
     }
 
     @Test

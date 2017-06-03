@@ -1,19 +1,33 @@
 package eadjlib.datastructure;
 
-public class AVLTreeNode<T extends Comparable> implements Comparable<T> {
+import eadjlib.logger.Logger;
+
+public class AVLTreeNode<K extends Comparable, V> implements Comparable<K> {
+    private final Logger log = Logger.getLoggerInstance(AVLTreeNode.class.getName());
     private Integer balance_factor;
-    AVLTreeNode<T> parent;
-    AVLTreeNode<T> left;
-    AVLTreeNode<T> right;
-    public T key;
+    K key;
+    V value;
+    AVLTreeNode<K, V> parent;
+    AVLTreeNode<K, V> left;
+    AVLTreeNode<K, V> right;
+
+    public AVLTreeNode() {
+        this.parent = null;
+        this.key = null;
+        this.value = null;
+    }
 
     /**
      * Constructor
      *
-     * @param key Key
+     * @param parent Parent of the node
+     * @param key    Key
+     * @param value  Value
      */
-    public AVLTreeNode(T key) {
+    public AVLTreeNode(AVLTreeNode<K, V> parent, K key, V value) {
+        this.parent = parent;
         this.key = key;
+        this.value = value;
     }
 
     /**
@@ -21,9 +35,9 @@ public class AVLTreeNode<T extends Comparable> implements Comparable<T> {
      *
      * @return Height of node
      */
-    public Integer height() {
-        Integer l_height = 0;
-        Integer r_height = 0;
+    public int height() {
+        int l_height = 0;
+        int r_height = 0;
         if (this.left != null)
             l_height = this.left.height();
         if (this.right != null)
@@ -46,7 +60,7 @@ public class AVLTreeNode<T extends Comparable> implements Comparable<T> {
      *
      * @return Balance factor
      */
-    public Integer getBalanceFactor() {
+    public int getBalanceFactor() {
         int l_height = 0;
         int r_height = 0;
         if (this.left != null)
@@ -64,7 +78,7 @@ public class AVLTreeNode<T extends Comparable> implements Comparable<T> {
      * @return Comparator result value
      * @throws NullPointerException when key is not set
      */
-    public int compareTo(AVLTreeNode<T> node) throws NullPointerException {
+    public int compareTo(AVLTreeNode<K, V> node) throws NullPointerException {
         if (this.key == null) {
             throw new NullPointerException("Key of the node is null.");
         } else if (node.key == null) {
@@ -74,12 +88,39 @@ public class AVLTreeNode<T extends Comparable> implements Comparable<T> {
     }
 
     /**
+     * Gets the node's key
+     *
+     * @return Key
+     */
+    public K key() {
+        return this.key;
+    }
+
+    /**
+     * Gets the node's value
+     *
+     * @return Value
+     */
+    public V value() {
+        return this.value;
+    }
+
+    /**
+     * Sets the node's value
+     *
+     * @param value Value to set the node to
+     */
+    public void setValue(V value) {
+        this.value = value;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @throws NullPointerException when key is not set
      */
     @Override
-    public int compareTo(T key) throws NullPointerException {
+    public int compareTo(K key) throws NullPointerException {
         if (this.key == null) {
             throw new NullPointerException("Key is null.");
         } else if (key == null) {
@@ -94,6 +135,6 @@ public class AVLTreeNode<T extends Comparable> implements Comparable<T> {
      */
     @Override
     public String toString() {
-        return this.key.toString();
+        return "[" + this.key.toString() + "]=" + this.value.toString();
     }
 }
