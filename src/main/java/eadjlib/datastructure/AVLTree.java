@@ -28,7 +28,7 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
     /**
      * Iterator
      */
-    protected class AVLTreeIterator implements Iterator<AVLTreeNode<K, V>> {
+    public class AVLTreeIterator implements Iterator<AVLTreeNode<K, V>> {
         private AVLTreeNode<K, V> next = null;
         private Stack<AVLTreeNode<K, V>> stack = new Stack<>();
 
@@ -124,9 +124,14 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      * @return Key of value or null if not found
      */
     private K search(V value, AVLTreeNode<K, V> node) {
-        K key = null;
-        //TODO
-        return key;
+        AVLTreeIterator iterator = new AVLTreeIterator( node );
+        while( iterator.hasNext() ) {
+            AVLTreeNode<K,V> current = iterator.next();
+            if( current.value().equals( value ) ) {
+                return current.key;
+            }
+        }
+        return null;
     }
 
     /**
@@ -141,7 +146,9 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      */
     private boolean remove(K key, AVLTreeNode<K, V> parent, Branch branch, AVLTreeNode<K, V> node) throws UndefinedException {
         try {
+            log.log_Trace( "Trying to remove K=", key );
             int comparison = node.key().compareTo(key);
+            log.log_Trace( "[", node.key, "].compareTo([",key,"]) : ", comparison );
             if (comparison == 0) {
                 if (node.right != null) {
                     K replacement_key = removeSmallest(node, node.right);
@@ -167,10 +174,10 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
                 log.log_Debug("Removed '", key, "'.");
                 return true;
             } else {
-                if (comparison < 0 && node.left != null) {
+                if (comparison > 0 && node.left != null) {
                     return remove(key, node, LEFT, node.left);
                 }
-                if (comparison > 0 && node.right != null) {
+                if (comparison < 0 && node.right != null) {
                     return remove(key, node, RIGHT, node.right);
                 }
                 return false;
@@ -196,9 +203,14 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
             K key = node.key;
             if (parent.left == node) {
                 parent.left = null;
+            } else if( parent == root ) {
+                node.parent = null;
+                root.right = null;
+                root = node;
             } else { //parent.right == node
-                parent.right = node.right;
-                node.right.parent = parent;
+                AVLTreeNode<K,V> grand_parent = parent.parent;
+                grand_parent.left = node;
+                node.parent = grand_parent;
             }
             balance(parent);
             return key;
@@ -220,9 +232,14 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
             K key = node.key;
             if (parent.right == node) {
                 parent.right = null;
+            } else if( parent == root ) {
+                node.parent = null;
+                root.left = null;
+                root = node;
             } else { //parent.left == node
-                parent.left = node.left;
-                node.left.parent = parent;
+                AVLTreeNode<K, V> grand_parent = parent.parent;
+                grand_parent.right = node;
+                node.parent = grand_parent;
             }
             balance(parent);
             return key;
@@ -673,6 +690,16 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
         } else {
             return search(key, this.root);
         }
+    }
+
+    /**
+     * Searches for key of a value
+     * @param value Value to search for
+     * @return Key of value or null if not found
+     */
+    public K search(V value ) {
+        log.log_Debug( "Searching for value '", value, "'" );
+        return search( value, this.root );
     }
 
     /**
