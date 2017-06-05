@@ -124,10 +124,10 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      * @return Key of value or null if not found
      */
     private K search(V value, AVLTreeNode<K, V> node) {
-        AVLTreeIterator iterator = new AVLTreeIterator( node );
-        while( iterator.hasNext() ) {
-            AVLTreeNode<K,V> current = iterator.next();
-            if( current.value().equals( value ) ) {
+        AVLTreeIterator iterator = new AVLTreeIterator(node);
+        while (iterator.hasNext()) {
+            AVLTreeNode<K, V> current = iterator.next();
+            if (current.value().equals(value)) {
                 return current.key;
             }
         }
@@ -146,16 +146,13 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      */
     private boolean remove(K key, AVLTreeNode<K, V> parent, Branch branch, AVLTreeNode<K, V> node) throws UndefinedException {
         try {
-            log.log_Trace( "Trying to remove K=", key );
+            log.log_Trace("Trying to remove K=", key, "; node is '", node.key, "'");
             int comparison = node.key().compareTo(key);
-            log.log_Trace( "[", node.key, "].compareTo([",key,"]) : ", comparison );
             if (comparison == 0) {
                 if (node.right != null) {
-                    K replacement_key = removeSmallest(node, node.right);
-                    node.key = replacement_key;
+                    removeSmallest(node, node.right);
                 } else if (node.left != null) {
-                    K replacement_key = removeLargest(node, node.left);
-                    node.key = replacement_key;
+                    removeLargest(node, node.left);
                 } else { //It's a leaf node
                     switch (branch) {
                         case LEFT:
@@ -203,12 +200,14 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
             K key = node.key;
             if (parent.left == node) {
                 parent.left = null;
-            } else if( parent == root ) {
+            } else if (parent == root) {
+                key = root.key;
                 node.parent = null;
                 root.right = null;
                 root = node;
             } else { //parent.right == node
-                AVLTreeNode<K,V> grand_parent = parent.parent;
+                key = parent.key;
+                AVLTreeNode<K, V> grand_parent = parent.parent;
                 grand_parent.left = node;
                 node.parent = grand_parent;
             }
@@ -231,17 +230,23 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
         } else {
             K key = node.key;
             if (parent.right == node) {
+                log.log_Debug( "A");
                 parent.right = null;
-            } else if( parent == root ) {
+            } else if (parent == root) {
+                log.log_Debug( "B");
+                key = root.key;
                 node.parent = null;
                 root.left = null;
                 root = node;
             } else { //parent.left == node
+                log.log_Debug( "C");
+                key = parent.key;
                 AVLTreeNode<K, V> grand_parent = parent.parent;
                 grand_parent.right = node;
                 node.parent = grand_parent;
             }
             balance(parent);
+            log.log_Debug( "@removeLargest(..): removed '", key, "'");
             return key;
         }
     }
@@ -441,19 +446,15 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
         return node.left.height() - node.right.height();
     }
 
-    //==================================================================================================================
-    // Protected methods
-    //==================================================================================================================
-
     /**
      * Pre-Order Binary Tree transversal
      *
      * @param printer Printer function
      * @param node    Node to process
      */
-    protected void preOrder(IPrintFunction printer, AVLTreeNode<K, V> node) {
+    private void preOrder(IPrintFunction printer, AVLTreeNode<K, V> node) {
         if (node != null) {
-            printer.call(node.key);
+            printer.call(node.key(), node.value());
             preOrder(printer, node.left);
             preOrder(printer, node.right);
         }
@@ -465,10 +466,10 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      * @param printer Printer function
      * @param node    Node to process
      */
-    protected void inOrder(IPrintFunction printer, AVLTreeNode<K, V> node) {
+    private void inOrder(IPrintFunction printer, AVLTreeNode<K, V> node) {
         if (node != null) {
             inOrder(printer, node.left);
-            printer.call(node.key);
+            printer.call(node.key(), node.value());
             inOrder(printer, node.right);
         }
     }
@@ -479,11 +480,11 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      * @param printer Printer function
      * @param node    Node to process
      */
-    protected void postOrder(IPrintFunction printer, AVLTreeNode<K, V> node) {
+    private void postOrder(IPrintFunction printer, AVLTreeNode<K, V> node) {
         if (node != null) {
             postOrder(printer, node.left);
             postOrder(printer, node.right);
-            printer.call(node.key);
+            printer.call(node.key(), node.value());
         }
     }
 
@@ -493,13 +494,13 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      * @param printer Printer function
      * @param node    Node to process
      */
-    protected void levelOrder(IPrintFunction printer, AVLTreeNode<K, V> node) {
+    private void levelOrder(IPrintFunction printer, AVLTreeNode<K, V> node) {
         if (node != null) {
             Queue<AVLTreeNode<K, V>> queue = new LinkedList<>();
             queue.add(node);
             while (!queue.isEmpty()) {
                 AVLTreeNode<K, V> current = queue.remove();
-                printer.call(current.key);
+                printer.call(current.key(), current.value());
                 if (current.left != null) queue.add(current.left);
                 if (current.right != null) queue.add(current.right);
             }
@@ -604,7 +605,10 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      */
     @Override
     public void forEach(Consumer action) {
-
+        AVLTreeIterator iterator = new AVLTreeIterator(this.root);
+        while (iterator.hasNext()) {
+            action.accept(iterator.next().value);
+        }
     }
 
     /**
@@ -621,7 +625,10 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      * @return Tree height
      */
     public int height() {
-        return this.root.height();
+        if( this.root == null )
+            return 0;
+        else
+            return this.root.height();
     }
 
     /**
@@ -694,12 +701,13 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
 
     /**
      * Searches for key of a value
+     *
      * @param value Value to search for
      * @return Key of value or null if not found
      */
-    public K search(V value ) {
-        log.log_Debug( "Searching for value '", value, "'" );
-        return search( value, this.root );
+    public K search(V value) {
+        log.log_Debug("Searching for value '", value, "'");
+        return search(value, this.root);
     }
 
     /**
@@ -749,6 +757,7 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
 
     /**
      * Prints the all nodes and their children in rows
+     *
      * @return String containing the nodes and their children connected
      */
     public String toString_Debug() {
