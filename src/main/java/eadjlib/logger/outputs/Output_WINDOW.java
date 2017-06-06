@@ -35,7 +35,9 @@ public class Output_WINDOW extends Output {
     }
 
     /**
-     * @return
+     * Gets the output's name
+     *
+     * @return Output name
      */
     @Override
     public String getOutputName() {
@@ -43,7 +45,9 @@ public class Output_WINDOW extends Output {
     }
 
     /**
-     * @return
+     * Gets the output's type
+     *
+     * @return Output type
      */
     @Override
     public GlobalOutputTypes getOutputType() {

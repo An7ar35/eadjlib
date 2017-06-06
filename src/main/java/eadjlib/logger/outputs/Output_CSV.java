@@ -17,6 +17,7 @@ public class Output_CSV extends Output {
      * Constructor
      *
      * @param output_name Name of output
+     * @param formatter   Output formatter to use
      * @throws IOException when creating a FileOutput fails
      */
     public Output_CSV(String output_name, Formatter_Interface formatter) throws IOException {
@@ -34,7 +35,8 @@ public class Output_CSV extends Output {
     /**
      * Constructor
      *
-     * @param output Name of output
+     * @param output    Name of output
+     * @param formatter Output formatter to use
      * @throws IOException when creating a FileOutput fails
      */
     public Output_CSV(FileOutput output, Formatter_Interface formatter) throws IOException {

@@ -36,6 +36,7 @@ public class Output_TXT extends Output {
      * FileOutput instance
      *
      * @param output Instance of the FileOutput
+     *               @param formatter Output formatter to use
      * @throws IOException creating a FileOutput fails
      */
     public Output_TXT(FileOutput output, Formatter_Interface formatter) throws IOException {
