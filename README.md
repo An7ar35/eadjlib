@@ -1,4 +1,10 @@
-
+# Table of Contents
+1. [Description](#description)
+2. [The Library](#the-library)
+   1. [Logger](#logger)
+   2. [Data-structure](#data-structure)
+       1. [AVL Tree](#avl-tree)
+6. [License](#license)
 
 # Description
 
@@ -79,3 +85,19 @@ To create a viewer for the log:
     to connect the logger to the class. 
 
 An example implementation of a GUI log viewer using JavaFX is available [here](https://github.com/An7ar35/guiLoggerView).
+
+## Data-structure
+
+#### AVL Tree
+
+`AVLTree<K,V>`
+
+Balanced binary tree where the heights of every node differ at most by +/- 1.
+
+## License
+
+This software is released under the GNU General Public License 2 license.
+
+Please reference when used in project and/or research and/or papers and/or integrated in production code (i.e.: DBAD).
+
+Copyright E. A. Davison 2016-17.
