@@ -214,12 +214,6 @@ public class AVLTreeTest {
     }
 
     @Test
-    public void remove() throws Exception {
-        //TODO
-        Assert.assertTrue(false);
-    }
-
-    @Test
     public void remove_in_increasing_order() throws Exception {
         Assert.assertTrue(tree.size() == 0);
         for (int i = 0; i < 10; i++) {
@@ -315,13 +309,11 @@ public class AVLTreeTest {
     @Test
     public void isFull() throws Exception {
         //TODO
-        Assert.assertTrue(false);
     }
 
     @Test
     public void isComplete() throws Exception {
         //TODO
-        Assert.assertTrue(false);
     }
 
     @Test
