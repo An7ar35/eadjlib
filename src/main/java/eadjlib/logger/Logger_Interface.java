@@ -62,8 +62,10 @@ public interface Logger_Interface {
 
     /**
      * Connects up a custom viewing window for the log outputs
+     *
      * @param window Viewing window
+     * @return Success
      */
-    boolean connectView(Log_Window_Interface window );
+    boolean connectView(Log_Window_Interface window);
 
 }

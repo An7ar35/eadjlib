@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -53,7 +52,7 @@ public class Output_CSVTest {
         Log_TimeStamp ts = new Log_TimeStamp(ltd);
         String expected = "100;" + ts.getDate() + ";" + ts.getTime() + ";" + Log_Levels.csvLevels[4] + ";Output_CSVTest;Description message." + System.lineSeparator();
         out.output("Output_CSVTest", 4, new Long(100), ts, "Description message.");
-        verify(mocked_file_out).appendString(eq(expected));
+        verify(mocked_file_out).appendString(expected);
     }
 
     @Test
@@ -63,6 +62,6 @@ public class Output_CSVTest {
         Exception e = new IOException("Some exception message.");
         out.output("Output_CSVTest", ts, new Long(100), e);
         String expected = "100;" + ts.getDate() + ";" + ts.getTime() + ";EXCEPTION;Output_CSVTest;java.io.IOException: Some exception message.";
-        verify(mocked_file_out).appendString(eq(expected));
+        verify(mocked_file_out).appendString(expected);
     }
 }
