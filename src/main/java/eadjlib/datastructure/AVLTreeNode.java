@@ -1,8 +1,7 @@
 package eadjlib.datastructure;
 
 import eadjlib.logger.Logger;
-
-public class AVLTreeNode<K extends Comparable, V> implements Comparable<K> {
+public class AVLTreeNode<K extends Comparable<? super K>, V> implements Comparable<K> {
     private final Logger log = Logger.getLoggerInstance(AVLTreeNode.class.getName());
     private Integer balance_factor;
     K key;

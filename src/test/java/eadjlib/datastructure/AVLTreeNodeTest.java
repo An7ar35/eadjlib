@@ -8,11 +8,11 @@ import static org.junit.Assert.*;
 public class AVLTreeNodeTest {
     @Test
     public void height() throws Exception {
-        AVLTreeNode a = new AVLTreeNode<Integer, String>(null, 1, "");
-        AVLTreeNode b = new AVLTreeNode<Integer, String>(null, 2, "");
-        AVLTreeNode c = new AVLTreeNode<Integer, String>(null, 3, "");
-        AVLTreeNode d = new AVLTreeNode<Integer, String>(null, 4, "");
-        AVLTreeNode e = new AVLTreeNode<Integer, String>(null, 5, "");
+        AVLTreeNode<Integer, String> a = new AVLTreeNode<>(null, 1, "");
+        AVLTreeNode<Integer, String> b = new AVLTreeNode<>(null, 2, "");
+        AVLTreeNode<Integer, String> c = new AVLTreeNode<>(null, 3, "");
+        AVLTreeNode<Integer, String> d = new AVLTreeNode<>(null, 4, "");
+        AVLTreeNode<Integer, String> e = new AVLTreeNode<>(null, 5, "");
 
         Assert.assertTrue(a.height() == 1);
         a.left = b;
@@ -27,11 +27,11 @@ public class AVLTreeNodeTest {
 
     @Test
     public void isBalanced() throws Exception {
-        AVLTreeNode a = new AVLTreeNode<Integer, String>(null, 1, "");
-        AVLTreeNode b = new AVLTreeNode<Integer, String>(null, 2, "");
-        AVLTreeNode c = new AVLTreeNode<Integer, String>(null, 3, "");
-        AVLTreeNode d = new AVLTreeNode<Integer, String>(null, 4, "");
-        AVLTreeNode e = new AVLTreeNode<Integer, String>(null, 5, "");
+        AVLTreeNode<Integer, String> a = new AVLTreeNode<>(null, 1, "");
+        AVLTreeNode<Integer, String> b = new AVLTreeNode<>(null, 2, "");
+        AVLTreeNode<Integer, String> c = new AVLTreeNode<>(null, 3, "");
+        AVLTreeNode<Integer, String> d = new AVLTreeNode<>(null, 4, "");
+        AVLTreeNode<Integer, String> e = new AVLTreeNode<>(null, 5, "");
 
         Assert.assertTrue(a.isBalanced());
         a.left = b;
@@ -46,11 +46,11 @@ public class AVLTreeNodeTest {
 
     @Test
     public void getBalanceFactor() throws Exception {
-        AVLTreeNode a = new AVLTreeNode<Integer, String>(null, 1, "");
-        AVLTreeNode b = new AVLTreeNode<Integer, String>(null, 2, "");
-        AVLTreeNode c = new AVLTreeNode<Integer, String>(null, 3, "");
-        AVLTreeNode d = new AVLTreeNode<Integer, String>(null, 4, "");
-        AVLTreeNode e = new AVLTreeNode<Integer, String>(null, 5, "");
+        AVLTreeNode<Integer, String> a = new AVLTreeNode<>(null, 1, "");
+        AVLTreeNode<Integer, String> b = new AVLTreeNode<>(null, 2, "");
+        AVLTreeNode<Integer, String> c = new AVLTreeNode<>(null, 3, "");
+        AVLTreeNode<Integer, String> d = new AVLTreeNode<>(null, 4, "");
+        AVLTreeNode<Integer, String> e = new AVLTreeNode<>(null, 5, "");
 
         Assert.assertTrue(a.getBalanceFactor() == 0);
         a.left = b;
@@ -65,10 +65,10 @@ public class AVLTreeNodeTest {
 
     @Test
     public void compareTo() throws Exception {
-        AVLTreeNode a = new AVLTreeNode<Integer, String>(null, 0, "");
-        AVLTreeNode b = new AVLTreeNode<Integer, String>(null, 0, "");
-        AVLTreeNode c = new AVLTreeNode<Integer, String>(null, 10, "");
-        AVLTreeNode d = new AVLTreeNode<Integer, String>(null, -10, "");
+        AVLTreeNode<Integer, String> a = new AVLTreeNode<>(null, 0, "");
+        AVLTreeNode<Integer, String> b = new AVLTreeNode<>(null, 0, "");
+        AVLTreeNode<Integer, String> c = new AVLTreeNode<>(null, 10, "");
+        AVLTreeNode<Integer, String> d = new AVLTreeNode<>(null, -10, "");
 
         Assert.assertTrue(a.compareTo(b) == 0);
         Assert.assertTrue(a.compareTo(c) == -1);

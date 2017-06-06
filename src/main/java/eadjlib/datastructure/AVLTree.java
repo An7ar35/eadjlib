@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 import static eadjlib.datastructure.AVLTree.Branch.*;
 
-public class AVLTree<K extends Comparable, V> extends AbstractCollection {
+public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollection {
     private final Logger log = Logger.getLoggerInstance(AVLTree.class.getName());
     private Integer node_count = 0;
     private AVLTreeNode<K, V> root;
@@ -29,7 +29,6 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      * Iterator
      */
     public class AVLTreeIterator implements Iterator<AVLTreeNode<K, V>> {
-        private AVLTreeNode<K, V> next = null;
         private Stack<AVLTreeNode<K, V>> stack = new Stack<>();
 
         /**
@@ -50,7 +49,6 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
          * @param root Starting node
          */
         public AVLTreeIterator(AVLTreeNode<K, V> root) {
-            this.next = root;
             this.addAll(root);
         }
 
@@ -86,7 +84,7 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
          * {@inheritDoc}
          */
         @Override
-        public void forEachRemaining(Consumer action) {
+        public void forEachRemaining(Consumer<? super AVLTreeNode<K, V>> action) {
             while (hasNext()) {
                 action.accept(next());
             }
@@ -230,23 +228,23 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
         } else {
             K key = node.key;
             if (parent.right == node) {
-                log.log_Debug( "A");
+                log.log_Debug("A");
                 parent.right = null;
             } else if (parent == root) {
-                log.log_Debug( "B");
+                log.log_Debug("B");
                 key = root.key;
                 node.parent = null;
                 root.left = null;
                 root = node;
             } else { //parent.left == node
-                log.log_Debug( "C");
+                log.log_Debug("C");
                 key = parent.key;
                 AVLTreeNode<K, V> grand_parent = parent.parent;
                 grand_parent.right = node;
                 node.parent = grand_parent;
             }
             balance(parent);
-            log.log_Debug( "@removeLargest(..): removed '", key, "'");
+            log.log_Debug("@removeLargest(..): removed '", key, "'");
             return key;
         }
     }
@@ -585,11 +583,7 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      * @throws UndefinedException when corruption is detected in the tree.
      */
     public boolean remove(K key) throws UndefinedException {
-        if (this.size() < 1) {
-            return false;
-        } else {
-            return remove(key, null, ROOT, this.root);
-        }
+        return this.size() > 0 && remove(key, null, ROOT, this.root);
     }
 
     /**
@@ -598,17 +592,6 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
     @Override
     public Iterator iterator() {
         return new AVLTreeIterator(this.root);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void forEach(Consumer action) {
-        AVLTreeIterator iterator = new AVLTreeIterator(this.root);
-        while (iterator.hasNext()) {
-            action.accept(iterator.next().value);
-        }
     }
 
     /**
@@ -625,10 +608,7 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      * @return Tree height
      */
     public int height() {
-        if( this.root == null )
-            return 0;
-        else
-            return this.root.height();
+        return this.root == null ? 0 : this.root.height();
     }
 
     /**
@@ -692,11 +672,7 @@ public class AVLTree<K extends Comparable, V> extends AbstractCollection {
      * @return Key existence state
      */
     public boolean search(K key) {
-        if (this.size() < 1) {
-            return false;
-        } else {
-            return search(key, this.root);
-        }
+        return this.size() > 0 && search(key, this.root);
     }
 
     /**

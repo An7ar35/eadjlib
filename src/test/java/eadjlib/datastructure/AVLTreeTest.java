@@ -194,8 +194,6 @@ public class AVLTreeTest {
     public void add_in_descending_order() throws Exception {
         for (int i = 9; i >= 0; i--) {
             tree.add(i, "");
-            System.out.println(tree.toString_Debug());
-            System.out.println("-------------------");
         }
         Assert.assertTrue(tree.size() == 10);
         Assert.assertTrue(tree.height() == 4);
@@ -225,7 +223,6 @@ public class AVLTreeTest {
             tree.remove(i);
             Assert.assertFalse(tree.search(i));
             Assert.assertTrue(tree.size() == size--);
-            System.out.println(tree.toString_Debug());
         }
     }
 
@@ -240,7 +237,6 @@ public class AVLTreeTest {
         for (int i = 9; i >= 0; i--) {
             tree.remove(i);
             Assert.assertFalse(tree.search(i));
-            //System.out.println( tree.toString_Debug() );
             Assert.assertTrue(tree.size() == size--);
         }
     }
