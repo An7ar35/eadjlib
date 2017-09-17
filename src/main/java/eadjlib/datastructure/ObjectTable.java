@@ -183,7 +183,7 @@ public class ObjectTable {
                 log.log_Error("Column index (", column, ") not within Row (#", row(), ")'s size.");
                 throw new IndexOutOfBoundsException("Column index not within table's columns");
             }
-            return Time.class.cast(data.get(column - 1));
+            return new Time(Date.class.cast(data.get(column - 1)).getTime());
         }
 
         /**
