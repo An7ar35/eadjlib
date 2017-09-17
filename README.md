@@ -4,6 +4,7 @@
    1. [Logger](#logger)
    2. [Data-structure](#data-structure)
        1. [AVL Tree](#avl-tree)
+       2. [ObjectTable](#objecttable)
 6. [License](#license)
 
 # Description
@@ -94,6 +95,12 @@ An example implementation of a GUI log viewer using JavaFX is available [here](h
 
 Balanced binary tree where the heights of every node differ at most by +/- 1.
 
+#### ObjectTable
+
+`ObjectTabe`
+
+Object table for caching/transporting SQL result sets. Elemtents are added 
+in sequential order left-to-right, row-by-row from the top.
 ## License
 
 This software is released under the GNU General Public License 2 license.
