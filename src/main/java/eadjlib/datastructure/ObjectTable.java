@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class ObjectTable {
     private final Logger log = Logger.getLoggerInstance(ObjectTable.class.getName());
@@ -222,6 +223,27 @@ public class ObjectTable {
      * @param headings Column headings
      */
     public ObjectTable(String... headings) {
+        int heading_count = 0;
+        this.headings = new ArrayList<String>();
+        for (String h : headings) {
+            this.headings.add(h);
+            heading_count++;
+        }
+        if (heading_count == 0) {
+            log.log_Error("ObjectTable was instantiated with no headings.");
+            throw new RuntimeException("ObjectTable was instantiated with no headings.");
+        } else {
+            this.table = new ArrayList<Row>();
+            this.cursor = new Cursor();
+        }
+    }
+
+    /**
+     * Constructor
+     *
+     * @param headings Column headings
+     */
+    public ObjectTable(List<String> headings) {
         int heading_count = 0;
         this.headings = new ArrayList<String>();
         for (String h : headings) {
