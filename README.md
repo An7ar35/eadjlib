@@ -112,6 +112,12 @@ in sequential order left-to-right, row-by-row from the top.
 
 Tuple container that holds row and column indices.
 
+`ObjectTabe`
+
+Object table for caching/transporting SQL result sets. Elemtents are added 
+in sequential order left-to-right, row-by-row from the top.
+
+=======
 ## License
 
 This software is released under the GNU General Public License 2 license.
