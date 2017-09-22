@@ -221,8 +221,9 @@ public class ObjectTable {
      * Constructor
      *
      * @param headings Column headings
+     * @throws RuntimeException when no headings are given
      */
-    public ObjectTable(String... headings) {
+    public ObjectTable(String... headings) throws RuntimeException {
         int heading_count = 0;
         this.headings = new ArrayList<String>();
         for (String h : headings) {
@@ -242,8 +243,9 @@ public class ObjectTable {
      * Constructor
      *
      * @param headings Column headings
+     * @throws RuntimeException when no headings are given
      */
-    public ObjectTable(List<String> headings) {
+    public ObjectTable(List<String> headings) throws RuntimeException {
         int heading_count = 0;
         this.headings = new ArrayList<String>();
         for (String h : headings) {
