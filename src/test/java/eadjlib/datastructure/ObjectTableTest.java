@@ -1,5 +1,6 @@
 package eadjlib.datastructure;
 
+import eadjlib.datatype.Cursor;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,8 +11,6 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-
-import static org.junit.Assert.*;
 
 public class ObjectTableTest {
     private ObjectTable table;
@@ -24,6 +23,246 @@ public class ObjectTableTest {
 
     @After
     public void tearDown() throws Exception {
+    }
+
+    @Test
+    public void clear() throws Exception {
+        ObjectTable table = new ObjectTable("Integer");
+        Assert.assertTrue(table.isEmpty());
+        for (int i = 0; i < 10; i++) {
+            table.add(i);
+        }
+        Assert.assertFalse(table.isEmpty());
+        table.clear();
+        Assert.assertTrue(table.isEmpty());
+    }
+
+    @Test
+    public void contains() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 0; i < 10; i++) {
+            Assert.assertFalse(table.contains(i));
+            Assert.assertFalse(table.contains("Value " + String.valueOf(i)));
+        }
+        for (int i = 0; i < 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        for (int i = 0; i < 10; i++) {
+            Assert.assertTrue(table.contains(i));
+            Assert.assertTrue(table.contains("Value " + String.valueOf(i)));
+        }
+    }
+
+    @Test
+    public void containsInRow() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        for (int i = 1; i <= 10; i++) {
+            Assert.assertTrue(table.containsInRow(i, i));
+            Assert.assertTrue(table.containsInRow("Value " + String.valueOf(i), i));
+        }
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void containsInRow_IndexOutOfBoundsException() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        table.containsInRow(1, 11);
+    }
+
+    @Test
+    public void containsColumn() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        Assert.assertTrue(table.containsColumn("Integer"));
+        Assert.assertTrue(table.containsColumn("String"));
+        Assert.assertFalse(table.containsColumn("Float"));
+    }
+
+    @Test
+    public void containsInColumn_byIndex() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        Assert.assertTrue(table.containsInColumn(3, 1));
+        Assert.assertTrue(table.containsInColumn("Value 3", 2));
+        Assert.assertFalse(table.containsInColumn(3, 2));
+        Assert.assertFalse(table.containsInColumn("Value 3", 1));
+        Assert.assertFalse(table.containsInColumn(11, 1));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void containsInColumn_byIndex_IndexOutOfBoundsException() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        table.containsInColumn(3, 3);
+    }
+
+    @Test
+    public void containsInColumn_byName() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        Assert.assertTrue(table.containsInColumn(3, "Integer"));
+        Assert.assertTrue(table.containsInColumn("Value 3", "String"));
+        Assert.assertFalse(table.containsInColumn(3, "String"));
+        Assert.assertFalse(table.containsInColumn("Value 3", "Integer"));
+        Assert.assertFalse(table.containsInColumn(11, "Integer"));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void containsInColumn_byName_IndexOutOfBoundsException() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        table.containsInColumn(3, "InvalidHeading");
+    }
+
+    @Test
+    public void indexOfInRow() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        for (int i = 1; i <= 10; i++) {
+            Assert.assertEquals(new Cursor(1, i), table.indexOfInRow(i, i));
+            Assert.assertEquals(new Cursor(2, i), table.indexOfInRow("Value " + String.valueOf(i), i));
+        }
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void indexOfInRow_not_found() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        table.indexOfInRow("Value 3", 4);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void indexOfInRow_invalid_row() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        table.indexOfInRow("Value 3", 11);
+    }
+
+    @Test
+    public void indexOfInColumn_byIndex() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        for (int i = 1; i <= 10; i++) {
+            Assert.assertEquals(new Cursor(1, i), table.indexOfInColumn(i, 1));
+            Assert.assertEquals(new Cursor(2, i), table.indexOfInColumn("Value " + String.valueOf(i), 2));
+        }
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void indexOfInColumn_byIndex_invalid_column() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        table.indexOfInColumn("Value 3", 3);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void indexOfInColumn_byIndex_not_found() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        table.indexOfInColumn("Value 11", 2);
+    }
+
+    @Test
+    public void indexOfInColumn_byName() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        for (int i = 1; i <= 10; i++) {
+            Assert.assertEquals(new Cursor(1, i), table.indexOfInColumn(i, "Integer"));
+            Assert.assertEquals(new Cursor(2, i), table.indexOfInColumn("Value " + String.valueOf(i), "String"));
+        }
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void indexOfInColumn_byName_invalid_heading() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        table.indexOfInColumn("Value 3", "InvalidHeading");
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void indexOfInColumn_byName_not_found() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        table.indexOfInColumn("Value 11", "String");
+    }
+
+    @Test
+    public void indexOf() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        for (int i = 1; i <= 10; i++) {
+            Assert.assertEquals(new Cursor(1, i), table.indexOf(i));
+            Assert.assertEquals(new Cursor(2, i), table.indexOf("Value " + String.valueOf(i)));
+        }
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void indexOf_IndexOutOfBoundsException() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        table.indexOf("Value 11");
+    }
+
+    @Test
+    public void isEmpty() throws Exception {
+        table = new ObjectTable("Integers");
+        Assert.assertTrue(table.isEmpty());
+        table.add(1);
+        Assert.assertFalse(table.isEmpty());
+        table.clear();
+        Assert.assertTrue(table.isEmpty());
     }
 
     @Test
@@ -45,7 +284,6 @@ public class ObjectTableTest {
             this.table.add(Timestamp.from(instant));
             this.instant = instant.plus(1, ChronoUnit.HOURS);
         }
-        System.out.println(table);
         Assert.assertEquals(10, this.table.columnCount());
     }
 
@@ -77,7 +315,7 @@ public class ObjectTableTest {
     @Test
     public void getDate() throws Exception {
         table = new ObjectTable("Date");
-        table.add( Date.from( this.instant));
+        table.add(Date.from(this.instant));
         this.table.add(Date.from((this.instant.plus(1, ChronoUnit.DAYS))));
         this.table.add(Date.from((this.instant.plus(1, ChronoUnit.DAYS))));
         Assert.assertEquals(Date.from(this.instant), table.getDate(1, 1));

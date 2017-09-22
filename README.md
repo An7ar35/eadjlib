@@ -4,6 +4,9 @@
    1. [Logger](#logger)
    2. [Data-structure](#data-structure)
        1. [AVL Tree](#avl-tree)
+       2. [ObjectTable](#objecttable)
+   3. [Data-type](#data-type)
+       1. [Cursor](#cursor)
 6. [License](#license)
 
 # Description
@@ -93,6 +96,21 @@ An example implementation of a GUI log viewer using JavaFX is available [here](h
 `AVLTree<K,V>`
 
 Balanced binary tree where the heights of every node differ at most by +/- 1.
+
+#### ObjectTable
+
+`ObjectTable`
+
+Object table for caching/transporting SQL result sets. Elements are added 
+in sequential order left-to-right, row-by-row from the top.
+
+## Data-type
+
+#### Cursor
+
+`Cursor`
+
+Tuple container that holds row and column indices.
 
 ## License
 
