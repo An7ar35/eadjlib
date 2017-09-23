@@ -3,12 +3,10 @@ package eadjlib.datastructure;
 import eadjlib.datatype.Cursor;
 import eadjlib.logger.Logger;
 
+import java.security.InvalidParameterException;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class ObjectTable {
     private final Logger log = Logger.getLoggerInstance(ObjectTable.class.getName());
@@ -632,6 +630,60 @@ public class ObjectTable {
             cursor.setColumn(0);
         }
         throw new IndexOutOfBoundsException("Element '" + e + "' not in table.");
+    }
+
+    /**
+     * Gets the index of the first matching column heading
+     *
+     * @param heading Heading
+     * @return Index of the column
+     * @throws InvalidParameterException when heading does not match any in the table
+     */
+    public int indexOfHeading(String heading) throws InvalidParameterException {
+        int column = 0;
+        for (String h : this.headings) {
+            column++;
+            if (h.equals(heading)) {
+                return column;
+            }
+        }
+        throw new InvalidParameterException("Heading '" + heading + "' does not match any in table.");
+    }
+
+    /**
+     * Gets a row as a HashMap with keys as column headings and values as the row objects
+     *
+     * @param row Row index
+     * @return HashMap of column headings and row objects
+     */
+    public HashMap<String, Object> getRow(int row) throws IndexOutOfBoundsException {
+        if (row < 1 || row > this.table.size()) {
+            throw new IndexOutOfBoundsException("Row index '" + row + "' out of bounds of the table.");
+        }
+        try {
+            HashMap<String, Object> map = new HashMap<>();
+            int column = 0;
+            for (String heading : this.headings) {
+                column++;
+                String mapKey = heading;
+                if (map.containsKey(mapKey)) {
+                    int count = 1;
+                    mapKey = heading + "_" + String.valueOf(count);
+                    log.log_Debug("HashMap already contains a key '" + heading + "' Trying with '" + mapKey + "'.");
+                    while (map.containsKey(mapKey)) {
+                        count++;
+                        mapKey = heading + "_" + String.valueOf(count);
+                        log.log_Debug("HashMap already contains a key '" + heading + "' Trying with '" + mapKey + "'.");
+                    }
+                }
+                map.put(mapKey, this.getObject(column, row));
+            }
+            return map;
+        } catch (IndexOutOfBoundsException e) {
+            log.log_Error("Inconsistencies detected between row '", row, "' width (", table.get(row).data.size(), ") and number of columns (", columnCount(), ")");
+            log.log_Exception(e);
+            throw e;
+        }
     }
 
     /**
