@@ -6,11 +6,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.security.InvalidParameterException;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 
 public class ObjectTableTest {
     private ObjectTable table;
@@ -528,5 +530,63 @@ public class ObjectTableTest {
         table = new ObjectTable("Timestamp");
         this.table.add("01/01/2000");
         table.getTimestamp(1, 1);
+    }
+
+    @Test
+    public void indexOfHeading() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        Assert.assertEquals(1, table.indexOfHeading("Integer"));
+        Assert.assertEquals(2, table.indexOfHeading("String"));
+    }
+
+    @Test(expected = InvalidParameterException.class)
+    public void indexOfHeading_with_invalid_heading() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        Assert.assertEquals(1, table.indexOfHeading("invalid_heading"));
+    }
+
+    @Test
+    public void getRow() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "String");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add("Value " + String.valueOf(i));
+        }
+        HashMap<String, Object> map = table.getRow(3);
+        Assert.assertEquals(2, map.size());
+        Assert.assertEquals(3, map.get("Integer"));
+        Assert.assertEquals("Value 3", map.get("String"));
+    }
+
+    @Test
+    public void getRow_with_heading_clash() throws Exception {
+        ObjectTable table = new ObjectTable("Integer", "Integer", "Integer");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+            table.add(i);
+            table.add(i);
+        }
+        HashMap<String, Object> map = table.getRow(3);
+        Assert.assertEquals(3, map.size());
+        Assert.assertEquals(3, map.get("Integer"));
+        Assert.assertEquals(3, map.get("Integer_1"));
+        Assert.assertEquals(3, map.get("Integer_2"));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void getRow_invalid_row() throws Exception {
+        ObjectTable table = new ObjectTable("Integer");
+        for (int i = 1; i <= 10; i++) {
+            table.add(i);
+        }
+        HashMap<String, Object> map = table.getRow(11);
     }
 }

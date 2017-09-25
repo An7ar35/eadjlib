@@ -1,12 +1,12 @@
 group 'org.eadjlib'
-version '0.1.5'
+version '0.1.6'
 
 allprojects {
     apply plugin: 'java'
     apply plugin: "jacoco"
     sourceCompatibility = '1.8'
     group 'org.eadjlib'
-    version '0.1.5'
+    version '0.1.6'
 
     repositories {
         mavenCentral()
