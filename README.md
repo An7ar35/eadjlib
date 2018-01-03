@@ -112,11 +112,6 @@ in sequential order left-to-right, row-by-row from the top.
 
 Tuple container that holds row and column indices.
 
-`ObjectTable`
-
-Object table for caching/transporting SQL result sets. Elements are added 
-in sequential order left-to-right, row-by-row from the top.
-
 
 ## License
 
