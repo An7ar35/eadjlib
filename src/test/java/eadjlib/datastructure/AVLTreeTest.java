@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class AVLTreeTest {
@@ -334,5 +335,17 @@ public class AVLTreeTest {
         }
         Assert.assertFalse(tree.search(-1));
         Assert.assertFalse(tree.search(10));
+    }
+
+    @Test
+    public void searchValueSet() throws Exception {
+        AVLTree<Integer, Integer> avlTree = new AVLTree<>();
+        for (int i = 0; i < 100; i++) {
+            avlTree.add(i, i);
+        }
+        Collection<Integer> result = avlTree.search((i) -> (i >= 50 && i < 100));
+        for (Integer r : result) {
+            Assert.assertTrue(r >= 50 && r < 100);
+        }
     }
 }
