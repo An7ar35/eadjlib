@@ -5,7 +5,9 @@ import eadjlib.logger.Logger;
 import javafx.util.Pair;
 
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static eadjlib.datastructure.AVLTree.Branch.*;
 
@@ -684,6 +686,22 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
     public K search(V value) {
         log.log_Debug("Searching for value '", value, "'");
         return search(value, this.root);
+    }
+
+    /**
+     * Searches for all keys matching the comparator
+     * @param comparator Comparator with .equals implemented with the search requirements
+     * @return List of values
+     */
+    public Collection<V> search(Function<K,Boolean> comparator) {
+        LinkedList<V> list = new LinkedList<>();
+        AVLTreeIterator it = new AVLTreeIterator(this.root);
+        while( it.hasNext() ) {
+            AVLTreeNode<K, V> current = it.next();
+            if (comparator.apply(current.key))
+                list.add(current.value);
+        }
+        return list;
     }
 
     /**
