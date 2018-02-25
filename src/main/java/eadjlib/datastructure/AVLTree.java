@@ -689,16 +689,32 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
     }
 
     /**
-     * Searches for all keys matching the comparator
-     * @param comparator Comparator with .equals implemented with the search requirements
-     * @return List of values
+     * Searches for all keys that return true when passed to the comparator function
+     * @param comparator Comparator with Key as arg.
+     * @return Collection of values
      */
-    public Collection<V> search(Function<K,Boolean> comparator) {
+    public Collection<V> searchKeys(Function<K,Boolean> comparator) {
         LinkedList<V> list = new LinkedList<>();
         AVLTreeIterator it = new AVLTreeIterator(this.root);
         while( it.hasNext() ) {
             AVLTreeNode<K, V> current = it.next();
             if (comparator.apply(current.key))
+                list.add(current.value);
+        }
+        return list;
+    }
+
+    /**
+     * Searches for all values that return true when passed to the comparator function
+     * @param comparator Comparator with Value as arg.
+     * @return Collection of values
+     */
+    public Collection<V> searchValues(Function<V, Boolean> comparator) {
+        LinkedList<V> list = new LinkedList<>();
+        AVLTreeIterator it = new AVLTreeIterator(this.root);
+        while( it.hasNext() ) {
+            AVLTreeNode<K, V> current = it.next();
+            if (comparator.apply(current.value))
                 list.add(current.value);
         }
         return list;

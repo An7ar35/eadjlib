@@ -338,14 +338,26 @@ public class AVLTreeTest {
     }
 
     @Test
-    public void searchValueSet() throws Exception {
+    public void searchKeys() throws Exception {
         AVLTree<Integer, Integer> avlTree = new AVLTree<>();
         for (int i = 0; i < 100; i++) {
-            avlTree.add(i, i);
+            avlTree.add(i, i * 10);
         }
-        Collection<Integer> result = avlTree.search((i) -> (i >= 50 && i < 100));
+        Collection<Integer> result = avlTree.searchKeys((i) -> (i >= 50 && i < 100));
         for (Integer r : result) {
-            Assert.assertTrue(r >= 50 && r < 100);
+            Assert.assertTrue(r >= 500 && r < 1000);
+        }
+    }
+
+    @Test
+    public void searchValues() throws Exception {
+        AVLTree<Integer, Integer> avlTree = new AVLTree<>();
+        for (int i = 0; i < 100; i++) {
+            avlTree.add(i, i * 10);
+        }
+        Collection<Integer> result = avlTree.searchValues((i) -> (i >= 500 && i < 1000));
+        for (Integer r : result) {
+            Assert.assertTrue(r >= 500 && r < 1000);
         }
     }
 }
