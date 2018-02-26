@@ -5,7 +5,6 @@ import eadjlib.logger.Logger;
 import javafx.util.Pair;
 
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -578,6 +577,57 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
     }
 
     /**
+     * Gets the value for a key
+     *
+     * @param key Key
+     * @return Value at key
+     * @throws NullPointerException when key is not in AVLTree
+     */
+    public V getValue(K key) throws NullPointerException {
+        if (search(key)) {
+            AVLTreeNode<K, V> node = this.root;
+            while (node != null) {
+                int comparison = key.compareTo(node.key());
+                if (comparison == 0)
+                    return node.value;
+                else if (comparison < 0 && node.left != null)
+                    node = node.left;
+                else if (comparison > 0 && node.right != null)
+                    node = node.right;
+            }
+        }
+        log.log_Error("Could not find key '", key, "' in tree.");
+        throw new NullPointerException("Key '" + key + "' does not exists in AVLTree.");
+    }
+
+    /**
+     * Runs a given function on the value at specified key
+     *
+     * @param key      Key
+     * @param function Function to run on value
+     * @return Post-function value
+     * @throws NullPointerException when key is not in AVLTree
+     */
+    public V apply(K key, Function<V, V> function) throws NullPointerException {
+        if (search(key)) {
+            AVLTreeNode<K, V> node = this.root;
+            while (node != null) {
+                int comparison = key.compareTo(node.key());
+                if (comparison == 0) {
+                    node.value = function.apply(node.value());
+                    return node.value();
+                } else if (comparison < 0 && node.left != null) {
+                    node = node.left;
+                } else if (comparison > 0 && node.right != null) {
+                    node = node.right;
+                }
+            }
+        }
+        log.log_Error("Could not find key '", key, "' in tree.");
+        throw new NullPointerException("Key '" + key + "' does not exists in AVLTree.");
+    }
+
+    /**
      * Removes key in tree matching given key
      *
      * @param key Key to remove
@@ -690,13 +740,14 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
 
     /**
      * Searches for all keys that return true when passed to the comparator function
+     *
      * @param comparator Comparator with Key as arg.
      * @return Collection of values
      */
-    public Collection<V> searchKeys(Function<K,Boolean> comparator) {
+    public Collection<V> searchKeys(Function<K, Boolean> comparator) {
         LinkedList<V> list = new LinkedList<>();
         AVLTreeIterator it = new AVLTreeIterator(this.root);
-        while( it.hasNext() ) {
+        while (it.hasNext()) {
             AVLTreeNode<K, V> current = it.next();
             if (comparator.apply(current.key))
                 list.add(current.value);
@@ -706,13 +757,14 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
 
     /**
      * Searches for all values that return true when passed to the comparator function
+     *
      * @param comparator Comparator with Value as arg.
      * @return Collection of values
      */
     public Collection<V> searchValues(Function<V, Boolean> comparator) {
         LinkedList<V> list = new LinkedList<>();
         AVLTreeIterator it = new AVLTreeIterator(this.root);
-        while( it.hasNext() ) {
+        while (it.hasNext()) {
             AVLTreeNode<K, V> current = it.next();
             if (comparator.apply(current.value))
                 list.add(current.value);
