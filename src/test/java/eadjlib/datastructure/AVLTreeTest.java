@@ -314,6 +314,43 @@ public class AVLTreeTest {
     }
 
     @Test
+    public void getValue() throws Exception {
+        for (int i = 0; i < 10; i++) {
+            tree.add(i, "val_" + i);
+        }
+        for (int i = 0; i < 10; i++) {
+            Assert.assertEquals("val_" + i, tree.getValue(i));
+        }
+    }
+
+    @Test
+    public void apply() throws Exception {
+        for (int i = 0; i < 10; i++) {
+            tree.add(i, "val_" + i);
+        }
+        for (int i = 0; i < 10; i++) {
+            String value = tree.apply(i, (String s)->(s += "_appended"));
+            Assert.assertEquals("Returned value on apply(..) incorrect.", "val_" + i + "_appended", value);
+        }
+        for (int i = 0; i < 10; i++) {
+            Assert.assertEquals("Stored value incorrect.", "val_" + i + "_appended", tree.getValue(i));
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void apply_fail() throws Exception {
+        for (int i = 0; i < 10; i++) {
+            tree.add(i, "val_" + i);
+        }
+        tree.getValue(11);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getValue_fail() throws Exception {
+        tree.getValue(1);
+    }
+
+    @Test
     public void searchValue() throws Exception {
         for (int i = 0; i < 10; i++) {
             tree.add(i, "val_" + i);
