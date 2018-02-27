@@ -329,7 +329,7 @@ public class AVLTreeTest {
             tree.add(i, "val_" + i);
         }
         for (int i = 0; i < 10; i++) {
-            String value = tree.apply(i, (String s)->(s += "_appended"));
+            String value = tree.apply(i, (String s) -> (s += "_appended"));
             Assert.assertEquals("Returned value on apply(..) incorrect.", "val_" + i + "_appended", value);
         }
         for (int i = 0; i < 10; i++) {
