@@ -148,10 +148,16 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
             log.log_Trace("Trying to remove K=", key, "; node is '", node.key, "'");
             int comparison = node.key().compareTo(key);
             if (comparison == 0) {
-                if (node.right != null) {
-                    removeSmallest(node, node.right);
-                } else if (node.left != null) {
-                    removeLargest(node, node.left);
+                if (node.left != null ^ node.right != null) { // 0-1 child
+                    if (node.left != null) {
+                        AVLTreeNode<K, V> replacement = detach(node, LEFT);
+                        balance(attach(parent, branch, replacement));
+                    } else { //node.right != null
+                        AVLTreeNode<K, V> replacement = detach(node, RIGHT);
+                        balance(attach(parent, branch, replacement));
+                    }
+                } else if (node.right != null && node.left != null) { //2 children
+                    balance(replaceWithLargest(node, node.left));
                 } else { //It's a leaf node
                     switch (branch) {
                         case LEFT:
@@ -164,12 +170,12 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
                             this.root = null;
                             break;
                     }
+                    balance(parent);
                 }
                 this.node_count--;
-                balance(node);
                 log.log_Debug("Removed '", key, "'.");
                 return true;
-            } else {
+            } else { //recurse until key is found
                 if (comparison > 0 && node.left != null) {
                     return remove(key, node, LEFT, node.left);
                 }
@@ -185,68 +191,28 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
     }
 
     /**
-     * Removes the smallest valued node in the tree
+     * Replaces a node with the the largest valued node in the sub tree
      *
-     * @param parent Parent of node
-     * @param node   Next node
-     * @return Key value removed
+     * @param node        Node to replace
+     * @param replacement Replacement candidate
+     * @return Replacement node's old parent
      * @throws UndefinedException when corruption is detected during the balancing of the parent
      */
-    private K removeSmallest(AVLTreeNode<K, V> parent, AVLTreeNode<K, V> node) throws UndefinedException {
-        if (node.left != null) {
-            return removeSmallest(node, node.left);
+    private AVLTreeNode<K, V> replaceWithLargest(AVLTreeNode<K, V> node, AVLTreeNode<K, V> replacement) throws UndefinedException {
+        if (replacement.right != null) {
+            return replaceWithLargest(node, replacement.right);
         } else {
-            K key = node.key;
-            if (parent.left == node) {
-                parent.left = null;
-            } else if (parent == root) {
-                key = root.key;
-                node.parent = null;
-                root.right = null;
-                root = node;
-            } else { //parent.right == node
-                key = parent.key;
-                AVLTreeNode<K, V> grand_parent = parent.parent;
-                grand_parent.left = node;
-                node.parent = grand_parent;
-            }
-            balance(parent);
-            return key;
-        }
-    }
-
-    /**
-     * Removes the largest valued node in the tree
-     *
-     * @param parent Parent of node
-     * @param node   Next node
-     * @return Key value removed
-     * @throws UndefinedException when corruption is detected during the balancing of the parent
-     */
-    private K removeLargest(AVLTreeNode<K, V> parent, AVLTreeNode<K, V> node) throws UndefinedException {
-        if (node.right != null) {
-            return removeLargest(node, node.right);
-        } else {
-            K key = node.key;
-            if (parent.right == node) {
-                log.log_Debug("A");
-                parent.right = null;
-            } else if (parent == root) {
-                log.log_Debug("B");
-                key = root.key;
-                node.parent = null;
-                root.left = null;
-                root = node;
-            } else { //parent.left == node
-                log.log_Debug("C");
-                key = parent.key;
-                AVLTreeNode<K, V> grand_parent = parent.parent;
-                grand_parent.right = node;
-                node.parent = grand_parent;
-            }
-            balance(parent);
-            log.log_Debug("@removeLargest(..): removed '", key, "'");
-            return key;
+            AVLTreeNode<K, V> replacement_parent = replacement.parent;
+            Branch replacement_branch = (replacement_parent == node ? getBranch(replacement) : RIGHT);
+            AVLTreeNode<K, V> replacement_node = detach(replacement_parent, replacement_branch);
+            if (node.left != null)
+                attach(replacement_node, LEFT, detach(node, LEFT));
+            if (node.right != null)
+                attach(replacement_node, RIGHT, detach(node, RIGHT));
+            attach(node.parent, getBranch(node), replacement_node);
+            return replacement_parent == node
+                    ? replacement
+                    : replacement_parent;
         }
     }
 
@@ -258,13 +224,20 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
     private void balance(AVLTreeNode<K, V> node) throws UndefinedException {
         try {
             if (node != null) {
+                AVLTreeNode<K, V> parent = node.parent;
                 int factor = node.getBalanceFactor();
                 if (factor > 1) { //right rotation
-                    rotateRR(node.parent, getBranch(node));
+                    if (node.left.getBalanceFactor() >= 0)
+                        parent = rotateRR(parent, getBranch(node));
+                    else
+                        parent = rotateLR(parent, getBranch(node));
                 } else if (factor < -1) { //left rotation
-                    rotateLL(node.parent, getBranch(node));
+                    if (node.right.getBalanceFactor() <= 0)
+                        parent = rotateLL(parent, getBranch(node));
+                    else
+                        parent = rotateRL(parent, getBranch(node));
                 }
-                balance(node.parent);
+                balance(parent);
             }
         } catch (UndefinedException e) {
             log.log_Fatal("Corruption detected in the AVL tree whilst balancing node [", node.key, "].");
@@ -279,19 +252,20 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
      *
      * @param parent parent of the rotation
      * @param branch Branch on which to do the rotation
+     * @return Parent node
      * @throws UndefinedException when parent is null
      */
-    private void rotateRR(AVLTreeNode<K, V> parent, Branch branch) throws UndefinedException {
+    private AVLTreeNode<K, V> rotateRR(AVLTreeNode<K, V> parent, Branch branch) throws UndefinedException {
         AVLTreeNode<K, V> child = getChild(parent, branch);
-        if (child.right != null && child.right.getBalanceFactor() < 0) {
-            rotateRL(parent, branch);
-        } else {
-            AVLTreeNode<K, V> b = detach(getChild(parent, branch), LEFT); // a<-b
-            AVLTreeNode<K, V> c = detach(parent, branch); // c
-            c.left = b.right;
+        if (child != null) {
+            AVLTreeNode<K, V> b = detach(child, LEFT); // c<-b<-
+            AVLTreeNode<K, V> a = detach(parent, branch); // ->a
+            if (b.right != null)
+                attach(a, LEFT, detach(b, RIGHT));
+            attach(b, RIGHT, a);
             attach(parent, branch, b);
-            attach(getChild(parent, branch), RIGHT, c);
         }
+        return parent;
     }
 
     /**
@@ -300,21 +274,20 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
      *
      * @param parent Pointer to the m_parent of the rotation
      * @param branch Branch on which to do the rotation
+     * @return Parent node
      * @throws UndefinedException when parent is null
      */
-    private void rotateLL(AVLTreeNode<K, V> parent, Branch branch) throws UndefinedException {
+    private AVLTreeNode<K, V> rotateLL(AVLTreeNode<K, V> parent, Branch branch) throws UndefinedException {
         AVLTreeNode<K, V> child = getChild(parent, branch);
         if (child != null) {
-            if (child.left != null && child.left.getBalanceFactor() > 0) {
-                rotateLR(parent, branch);
-            } else {
-                AVLTreeNode<K, V> b = detach(getChild(parent, branch), RIGHT); // b->c
-                AVLTreeNode<K, V> a = detach(parent, branch); // a
-                a.right = b.left;
-                attach(parent, branch, b);
-                attach(getChild(parent, branch), LEFT, a);
-            }
+            AVLTreeNode<K, V> b = detach(getChild(parent, branch), RIGHT); // ->b->c
+            AVLTreeNode<K, V> a = detach(parent, branch); // ->a
+            if (b.left != null)
+                attach(a, RIGHT, detach(b, LEFT));
+            attach(b, LEFT, a);
+            attach(parent, branch, b);
         }
+        return parent;
     }
 
     /**
@@ -322,11 +295,12 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
      *
      * @param parent Pointer to the m_parent of the rotation
      * @param branch Branch on which to do the rotation
+     * @return Parent node
      * @throws UndefinedException when parent is null
      */
-    private void rotateLR(AVLTreeNode<K, V> parent, Branch branch) throws UndefinedException {
-        rotateLL(getChild(parent, branch), LEFT);
-        rotateRR(parent, branch);
+    private AVLTreeNode<K, V> rotateLR(AVLTreeNode<K, V> parent, Branch branch) throws UndefinedException {
+        AVLTreeNode<K, V> b = rotateLL(getChild(parent, branch), LEFT);
+        return rotateRR(b.parent, getBranch(b));
     }
 
     /**
@@ -334,11 +308,12 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
      *
      * @param parent Pointer to the m_parent of the rotation
      * @param branch Branch on which to do the rotation
+     * @return Parent node
      * @throws UndefinedException when parent is null
      */
-    private void rotateRL(AVLTreeNode<K, V> parent, Branch branch) throws UndefinedException {
-        rotateRR(getChild(parent, branch), RIGHT);
-        rotateLL(parent, branch);
+    private AVLTreeNode<K, V> rotateRL(AVLTreeNode<K, V> parent, Branch branch) throws UndefinedException {
+        AVLTreeNode<K, V> b = rotateRR(getChild(parent, branch), RIGHT);
+        return rotateLL(b.parent, getBranch(b));
     }
 
     /**
@@ -353,17 +328,24 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
         if (parent == null && branch != ROOT) {
             throw new UndefinedException("Parent is undefined (null).");
         }
+        AVLTreeNode<K, V> child = null;
         switch (branch) {
             case LEFT:
                 if (parent.left == null) return new AVLTreeNode<>();
-                return parent.left;
+                child = parent.left;
+                child.parent = null;
+                parent.left = null;
+                return child;
             case RIGHT:
                 if (parent.right == null) return new AVLTreeNode<>();
-                return parent.right;
+                child = parent.right;
+                child.parent = null;
+                parent.right = null;
+                return child;
             case ROOT:
                 return this.root;
         }
-        return null;
+        return child;
     }
 
     /**
@@ -372,9 +354,10 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
      * @param parent        Adoptive parent node
      * @param branch        Branch to attach to
      * @param orphan_branch Orphan branch to adopt
+     * @return Root of attached orphan branch
      * @throws UndefinedException when the parent is null and branch is not ROOT
      */
-    private void attach(AVLTreeNode<K, V> parent, Branch branch, AVLTreeNode<K, V> orphan_branch) throws UndefinedException {
+    private AVLTreeNode<K, V> attach(AVLTreeNode<K, V> parent, Branch branch, AVLTreeNode<K, V> orphan_branch) throws UndefinedException {
         if (parent == null && branch != ROOT) {
             throw new UndefinedException("Parent is undefined (null).");
         }
@@ -382,16 +365,17 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
             case LEFT:
                 parent.left = orphan_branch;
                 parent.left.parent = parent;
-                break;
+                return parent.left;
             case RIGHT:
                 parent.right = orphan_branch;
                 parent.right.parent = parent;
-                break;
+                return parent.right;
             case ROOT:
                 this.root = orphan_branch;
                 this.root.parent = null;
-                break;
+                return this.root;
         }
+        return null;
     }
 
     /**
@@ -539,9 +523,10 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
      *
      * @param key   Key to add
      * @param value Value to add
+     * @return Success
      * @throws UndefinedException when corruption is detected during re-balancing
      */
-    public void add(K key, V value) throws UndefinedException {
+    public boolean add(K key, V value) throws UndefinedException {
         try {
             log.log_Debug("Adding <", key, ", ", value, "> to tree.");
             if (this.node_count < 1) {
@@ -559,7 +544,7 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
                             balance(ptr);
                             break;
                         }
-                    } else {
+                    } else if (key.compareTo(ptr.key) > 0) {
                         if (ptr.right != null) {
                             ptr = ptr.right;
                         } else {
@@ -568,9 +553,13 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
                             balance(ptr);
                             break;
                         }
+                    } else {
+                        log.log_Error("Key '", key, "' already exists in tree.");
+                        return false;
                     }
                 }
             }
+            return true;
         } catch (UndefinedException e) {
             throw new UndefinedException("Balancing failed whilst adding key [" + key + "] to tree.", e);
         }
