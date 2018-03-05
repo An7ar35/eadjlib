@@ -328,7 +328,7 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
         if (parent == null && branch != ROOT) {
             throw new UndefinedException("Parent is undefined (null).");
         }
-        AVLTreeNode<K,V> child = null;
+        AVLTreeNode<K, V> child = null;
         switch (branch) {
             case LEFT:
                 if (parent.left == null) return new AVLTreeNode<>();
@@ -523,9 +523,10 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
      *
      * @param key   Key to add
      * @param value Value to add
+     * @return Success
      * @throws UndefinedException when corruption is detected during re-balancing
      */
-    public void add(K key, V value) throws UndefinedException {
+    public boolean add(K key, V value) throws UndefinedException {
         try {
             log.log_Debug("Adding <", key, ", ", value, "> to tree.");
             if (this.node_count < 1) {
@@ -543,7 +544,7 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
                             balance(ptr);
                             break;
                         }
-                    } else {
+                    } else if (key.compareTo(ptr.key) > 0) {
                         if (ptr.right != null) {
                             ptr = ptr.right;
                         } else {
@@ -552,9 +553,13 @@ public class AVLTree<K extends Comparable<? super K>, V> extends AbstractCollect
                             balance(ptr);
                             break;
                         }
+                    } else {
+                        log.log_Error("Key '", key, "' already exists in tree.");
+                        return false;
                     }
                 }
             }
+            return true;
         } catch (UndefinedException e) {
             throw new UndefinedException("Balancing failed whilst adding key [" + key + "] to tree.", e);
         }
